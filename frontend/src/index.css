@@ -1,0 +1,79 @@
+/* General Reset */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #007ACC; /* Primary blue color */
+}
+
+/* Navbar */
+.navbar {
+  padding: 10px 15px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navbar-brand span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-link {
+  font-size: 1rem;
+  padding: 8px 15px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #28a745; /* Green hover effect */
+}
+
+/* Mobile View */
+.navbar-toggler {
+  border: none;
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .nav-link {
+    padding: 10px;
+  }
+}
+
+/* Submit Button Styling */
+.submit-button {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* Remove the default border */
+  color: white; /* White text */
+  padding: 12px 20px; /* Padding around the text */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Ensure it's treated as a block-level element */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.submit-button:hover {
+  background-color: #45a049; /* Darker green when hovering */
+}
