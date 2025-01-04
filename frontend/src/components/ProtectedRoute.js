@@ -1,16 +1,23 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = ({ role, component: Component }) => {
-  const user = JSON.parse(localStorage.getItem('user')); // Get user from localStorage
-  const location = useLocation(); // Get current location
+const ProtectedRoute = ({ role, children }) => {
+  const user = JSON.parse(localStorage.getItem('user')); // Fetch user details from localStorage
+  const location = useLocation();
 
-  if (!user || user.role !== role) {
-    // Redirect to login page with the current location as the `from` parameter
+  if (!user) {
+    // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} />;
   }
 
-  return <Component />;
+  if (user.role !== role) {
+    // Redirect to the dashboard based on user role
+    const redirectPath = `/${user.role}/dashboard`;
+    return <Navigate to={redirectPath} />;
+  }
+
+  // Render the protected component
+  return children;
 };
 
 export default ProtectedRoute;

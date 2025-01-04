@@ -1,0 +1,46 @@
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .student-table th, .student-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .student-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .student-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .student-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .edit-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .edit-btn:hover, .delete-btn:hover {
+    opacity: 0.8;
+  }
+  

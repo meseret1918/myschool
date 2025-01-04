@@ -1,0 +1,201 @@
+/* General Layout */
+.manage-teachers {
+  padding: 15px;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  font-size: 12px; /* Minimized font size for compact layout */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 18px; /* Reduced title size */
+  color: #333;
+}
+
+.form-container {
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h3 {
+  margin-bottom: 8px;
+  font-size: 16px; /* Smaller subheading */
+  color: #555;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 12px;
+}
+
+button {
+  padding: 8px 10px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px; /* Reduced button text size */
+  transition: background-color 0.3s ease;
+}
+
+button.add-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+button.add-btn:hover {
+  background-color: #218838;
+}
+
+button.update-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+button.update-btn:hover {
+  background-color: #0056b3;
+}
+
+button.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.delete-btn:hover {
+  background-color: #c82333;
+}
+
+button.toggle-btn {
+  background-color: #0730ff;
+  color: white;
+}
+
+button.toggle-btn:hover {
+  background-color: #00e08e;
+}
+
+.teacher-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background-color: white;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 12px; /* Compact table font size */
+  table-layout: fixed; /* Ensures all columns fit within the container */
+  margin-bottom: 30px; /* Adds margin to create a gap between the table and footer */
+}
+
+.teacher-table th,
+.teacher-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Truncate overflowing text */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.teacher-table th {
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
+}
+
+.teacher-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.teacher-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Success and Error Messages */
+.success {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Positioning the "Add New Teacher" and "Back to Dashboard" buttons */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn.add-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn.add-btn:hover {
+  background-color: #45a049;
+}
+
+.back-to-dashboard {
+  background-color: #6c757d; /* Secondary button color */
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-to-dashboard:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .manage-teachers {
+    padding: 10px;
+  }
+
+  .form-container {
+    padding: 8px;
+  }
+
+  button {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  .teacher-table {
+    font-size: 10px;
+  }
+
+  .teacher-table th,
+  .teacher-table td {
+    padding: 6px;
+  }
+}

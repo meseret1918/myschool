@@ -1,25 +1,32 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-const parentSchema = new mongoose.Schema({
+const Parent = sequelize.define('Parent', {
+    parent_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
     name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     email: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
         unique: true,
     },
-    phoneNumber: {
-        type: String,
-        required: true,
-    },
-    childId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
-        required: true,
-    },
+    address: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    }
+}, {
+    tableName: 'parents', // Match MySQL table name
+    timestamps: false,    // Disable automatic timestamp fields
 });
 
-const Parent = mongoose.model('Parent', parentSchema);
 module.exports = Parent;

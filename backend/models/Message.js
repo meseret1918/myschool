@@ -1,25 +1,62 @@
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-const messageSchema = new mongoose.Schema({
+// Define the Message model
+const Message = sequelize.define('Message', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     senderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Assuming a generic User model for both student, teacher, and parent
-        required: true,
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Users',
+            key: 'id',
+        },
     },
-    receiverId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Assuming a generic User model for both student, teacher, and parent
-        required: true,
+    recipientId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Users',
+            key: 'id',
+        },
     },
-    content: {
-        type: String,
-        required: true,
+    recipientRole: {
+        type: DataTypes.ENUM('student', 'teacher', 'parent', 'admin'),
+        allowNull: false,
+    },
+    message: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+            notEmpty: { msg: 'Message content cannot be empty' },
+        },
     },
     sentAt: {
-        type: Date,
-        default: Date.now,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.NOW,
     },
+}, {
+    tableName: 'messages',
+    timestamps: false,
 });
 
-const Message = mongoose.model('Message', messageSchema);
+// Sync the model with the database
+sequelize.sync({ alter: true }) // Using `alter: true` to apply changes without dropping the table
+    .then(() => {
+        console.log('Messages table has been synchronized.');
+    })
+    .catch((error) => {
+        console.error('Unable to synchronize table:', error);
+    });
+
+// Define associations if needed
+Message.associate = (models) => {
+    Message.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
+    Message.belongsTo(models.User, { foreignKey: 'recipientId', as: 'recipient' });
+};
+
 module.exports = Message;

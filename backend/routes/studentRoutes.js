@@ -1,91 +1,76 @@
 const express = require('express');
+const mysql = require('mysql2');  // Import MySQL package
 const router = express.Router();
-const mysql = require('mysql2');
 
-// MySQL connection (assuming you have the connection set up already)
+// MySQL connection
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',        // Your MySQL username
-    password: 'root12',  // Your MySQL password
-    database: 'school_management',  // Your database name
+    user: 'root',           // Your MySQL username
+    password: 'root12',     // Your MySQL password
+    database: 'school_management', // Your MySQL database name
 });
 
-// Route to get all students
-router.get('/students', (req, res) => {
-    const query = 'SELECT * FROM students';  // SQL query to fetch all students
-
-    db.query(query, (err, results) => {
-        if (err) {
-            return res.status(500).send('Error fetching students');
-        }
-        res.json(results);  // Send the result as a JSON response
-    });
+// Connect to MySQL
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+    } else {
+        console.log('Connected to the MySQL database');
+    }
 });
 
-// Route to get a single student by ID
-router.get('/students/:id', (req, res) => {
-    const studentId = req.params.id;  // Get student ID from URL parameter
-
-    const query = 'SELECT * FROM students WHERE id = ?';  // SQL query to fetch a single student
-
-    db.query(query, [studentId], (err, results) => {
-        if (err) {
-            return res.status(500).send('Error fetching student');
-        }
-        if (results.length === 0) {
-            return res.status(404).send('Student not found');
-        }
-        res.json(results[0]);  // Send the student data as a JSON response
-    });
+// Get all students
+router.get('/', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM students';  // SQL query to fetch all students
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Failed to fetch students' });
+            }
+            res.json(results);  // Send the result as a JSON response
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error fetching students' });
+    }
 });
 
-// Route to add a new student
-router.post('/students', (req, res) => {
-    const { name, email, phone, date_of_birth, address, parent_id } = req.body;  // Get data from the request body
+// Add a new student
+router.post('/', async (req, res) => {
+    try {
+        const { name, email, class_name, parent_id, phone, date_of_birth, address } = req.body;
 
-    const query = 'INSERT INTO students (name, email, phone, date_of_birth, address, parent_id) VALUES (?, ?, ?, ?, ?, ?)';
-
-    db.query(query, [name, email, phone, date_of_birth, address, parent_id], (err, results) => {
-        if (err) {
-            return res.status(500).send('Error adding student');
+        // Basic validation
+        if (!name || !email || !class_name) {
+            return res.status(400).json({ error: 'Name, email, and class name are required' });
         }
-        res.status(201).json({ id: results.insertId, name, email });  // Return the new student data
-    });
-});
 
-// Route to update an existing student
-router.put('/students/:id', (req, res) => {
-    const studentId = req.params.id;  // Get student ID from URL parameter
-    const { name, email, phone, date_of_birth, address, parent_id } = req.body;  // Get updated data
+        // SQL query to insert a new student
+        const query = 'INSERT INTO students (name, email, class_name, parent_id, phone, date_of_birth, address) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-    const query = 'UPDATE students SET name = ?, email = ?, phone = ?, date_of_birth = ?, address = ?, parent_id = ? WHERE id = ?';
+        db.query(query, [name, email, class_name, parent_id, phone, date_of_birth, address], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Failed to add student' });
+            }
 
-    db.query(query, [name, email, phone, date_of_birth, address, parent_id, studentId], (err, results) => {
-        if (err) {
-            return res.status(500).send('Error updating student');
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).send('Student not found');
-        }
-        res.json({ message: 'Student updated successfully' });
-    });
-});
-
-// Route to delete a student
-router.delete('/students/:id', (req, res) => {
-    const studentId = req.params.id;  // Get student ID from URL parameter
-
-    const query = 'DELETE FROM students WHERE id = ?';
-
-    db.query(query, [studentId], (err, results) => {
-        if (err) {
-            return res.status(500).send('Error deleting student');
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).send('Student not found');
-        }
-        res.json({ message: 'Student deleted successfully' });
-    });
+            // Return the new student data along with the insert ID
+            res.status(201).json({
+                id: results.insertId,
+                name,
+                email,
+                class_name,
+                parent_id,
+                phone,
+                date_of_birth,
+                address
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error adding student' });
+    }
 });
 
 module.exports = router;

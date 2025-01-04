@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
-const db = require('../db'); // Database connection
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-// Secret key for JWT (should be stored in environment variables)
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'jwtsecretkey1234567890';
 
-// Middleware to verify if the user is authenticated (logged in)
 const verifyAuthenticated = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -13,10 +12,7 @@ const verifyAuthenticated = (req, res, next) => {
     }
 
     try {
-        // Verify token and extract user information
         const decoded = jwt.verify(token, JWT_SECRET);
-
-        // Fetch user from the database
         db.query('SELECT * FROM users WHERE id = ?', [decoded.userId], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Database error', error: err });
@@ -36,7 +32,6 @@ const verifyAuthenticated = (req, res, next) => {
     }
 };
 
-// Middleware to check if the user has admin privileges
 const verifyAdmin = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -46,8 +41,6 @@ const verifyAdmin = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-
-        // Fetch user from the database
         db.query('SELECT * FROM users WHERE id = ?', [decoded.userId], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Database error', error: err });

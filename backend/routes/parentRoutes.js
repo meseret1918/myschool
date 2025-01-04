@@ -1,21 +1,34 @@
 const express = require('express');
+const Parent = require('../models/Parent'); // Ensure this path is correct
 const router = express.Router();
-const parentController = require('../controllers/parentController');
-const authMiddleware = require('../utils/authMiddleware');
-
-// Create a new parent
-router.post('/', authMiddleware.verifyAdmin, parentController.createParent);
 
 // Get all parents
-router.get('/', authMiddleware.verifyAdmin, parentController.getAllParents);
+router.get('/', async (req, res) => {
+    try {
+        const parents = await Parent.findAll();
+        res.json(parents);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch parents' });
+    }
+});
 
-// Get a parent by ID
-router.get('/:parentId', authMiddleware.verifyAdmin, parentController.getParentById);
+// Add a new parent
+router.post('/', async (req, res) => {
+    try {
+        const { name, phone, email, address } = req.body;
 
-// Update parent details
-router.put('/:parentId', authMiddleware.verifyAdmin, parentController.updateParent);
+        // Validate input
+        if (!name || !email) {
+            return res.status(400).json({ error: 'Name and email are required' });
+        }
 
-// Delete parent
-router.delete('/:parentId', authMiddleware.verifyAdmin, parentController.deleteParent);
+        const parent = await Parent.create({ name, phone, email, address });
+        res.status(201).json(parent);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to add parent' });
+    }
+});
 
 module.exports = router;

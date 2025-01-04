@@ -1,25 +1,48 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db'); // Assuming this is your sequelize instance
 
-const studentSchema = new mongoose.Schema({
+const Student = sequelize.define('Student', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    grade: {
-        type: String,
-        required: true,
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    parentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Parent',
-        required: true,
+    class_name: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    dob: {
-        type: Date,
-        required: true,
+    parent_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
-    // Additional fields like marks, attendance can be added later
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    date_of_birth: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW, // Automatically set to current timestamp when creating a new record
+        allowNull: false
+    }
+}, {
+    tableName: 'students',
+    timestamps: false // If you do not want Sequelize to manage the createdAt and updatedAt fields automatically
 });
 
-const Student = mongoose.model('Student', studentSchema);
 module.exports = Student;

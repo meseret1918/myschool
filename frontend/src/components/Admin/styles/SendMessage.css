@@ -1,0 +1,70 @@
+.send-message-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.send-message-container h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.send-message-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.send-message-container label {
+    font-weight: bold;
+    color: #555;
+}
+
+.send-message-container input,
+.send-message-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.send-message-container textarea {
+    resize: none;
+    height: 100px;
+}
+
+.send-message-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.send-message-container button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.send-message-container p {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.send-message-container p.success {
+    color: #28a745;
+}
+
+.send-message-container p.error {
+    color: #dc3545;
+}

@@ -1,0 +1,114 @@
+/* styles/EditTeacher.css */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .edit-teacher {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 14px; /* Adjust font size as needed */
+    min-height: calc(100vh - 120px); /* Ensure it takes full height minus header/footer */
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 24px; /* Adjust title size as needed */
+    color: #333;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .form-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+  
+  .form-container button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Adjust button text size as needed */
+    transition: background-color 0.3s ease;
+  }
+  
+  .message {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .success {
+    color: green;
+    background-color: #eaffea;
+  }
+  
+  .error {
+    color: red;
+    background-color: #ffeaea;
+  }
+  
+  .btn.update-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .btn.update-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .back-to-dashboard {
+    display: block;
+    text-align: right;
+    margin-top: 10px;
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  .back-to-dashboard:hover {
+    text-decoration: underline;
+  }
+  
+  .spacer {
+    height: 50px; /* Adjust height as needed to create gap */
+  }
+  
+  /* Responsive Layout */
+  @media (max-width: 768px) {
+    .edit-teacher {
+      padding: 10px;
+    }
+  
+    .form-container {
+      padding: 15px;
+    }
+  
+    .form-container input {
+      font-size: 12px;
+    }
+  
+    .form-container button {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    .message {
+      font-size: 12px;
+    }
+  }
+  

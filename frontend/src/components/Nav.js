@@ -36,44 +36,34 @@ const Header = ({ isAuthenticated, role }) => {
                   Home
                 </a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link text-white" href="/about">
-                  About
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-white" href="/services">
-                  Services
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-white" href="/contact">
-                  Contact
-                </a>
-              </li>
 
               {/* Conditional Links */}
               {!isAuthenticated ? (
                 <>
                   <li className="nav-item">
+                    {/* Login Icon and Text */}
                     <a className="nav-link text-white" href="/login">
+                      <i className="fas fa-user-circle" style={{ fontSize: "24px", marginRight: "8px" }}></i>
                       Login
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link text-white" href="/register">
-                      Register
-                    </a>
+                    {/* Register link can go here if needed */}
+                    <a className="nav-link text-white" href="/register"></a>
                   </li>
                 </>
               ) : (
                 <>
                   <li className="nav-item">
                     <a className="nav-link text-white" href={`/${role}/dashboard`}>
-                      Login
+                      Dashboard
                     </a>
                   </li>
-                 
+                  <li className="nav-item">
+                    <a className="nav-link text-white" href="/logout">
+                      Logout
+                    </a>
+                  </li>
                 </>
               )}
             </ul>
