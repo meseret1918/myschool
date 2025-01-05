@@ -1,124 +1,194 @@
-/* General Layout */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+/* ManageStudents.css */
 
-/* Main container to ensure content fills space correctly */
+/* Main container for the Manage Students section */
 .manage-students-container {
-  flex: 1;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Ensures content starts from the top */
+  max-width: 1200px;
+  margin: auto;
+  padding-bottom: 60px; /* Added gap between content and footer */
 }
 
-/* Table Styles */
+h2, h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
-  font-family: Arial, sans-serif;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-table th,
-table td {
+th, td {
+  padding: 10px;
+  text-align: left;
   border: 1px solid #ddd;
-  text-align: center;
-  padding: 0.7rem;
 }
 
-table th {
-  background-color: #007bff; /* Blue */
-  color: white;
-  text-transform: uppercase;
+th {
+  background-color: #f4f4f4;
 }
 
-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+td {
+  background-color: #fff;
 }
 
-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Button Styles */
-.add-button {
-  background-color: #4caf50; /* Green */
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
+button {
+  padding: 8px 16px;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.edit-button {
-  background-color: #ffc107; /* Yellow */
-  color: black;
   border: none;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
   border-radius: 4px;
-  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Buttons for add, edit, delete with hover effects */
+.add-button,
+.edit-button,
 .delete-button {
-  background-color: #f44336; /* Red */
+  background-color: #4CAF50;
   color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
 }
 
-.add-button:hover {
+.add-button:hover,
+.edit-button:hover,
+.delete-button:hover {
   background-color: #45a049;
 }
 
-.edit-button:hover {
-  background-color: #e0a800;
-}
-
-.delete-button:hover {
-  background-color: #d32f2f;
-}
-
-/* Status Message */
-.status-message {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.status-message.success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
-
-.status-message.error {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-}
-
-/* Footer */
-footer {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  position: relative;
+/* Styles for delete confirmation modal */
+.confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  bottom: 0;
-  margin-top: auto; /* Ensures footer stays at the bottom */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.confirmation-modal > div {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Style for the confirmation message text */
+.confirmation-modal p.message {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Layout for Yes and No buttons */
+.confirmation-modal div.buttons {
+  display: flex;
+  justify-content: space-between; /* Space between Yes and No buttons */
+  align-items: center;
+  margin-top: 20px; /* Adds space between message and buttons */
+}
+
+/* Yes Button (Green) */
+.confirmation-modal button.yes-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.confirmation-modal button.yes-button:hover {
+  background-color: #45a049;
+}
+
+/* No Button (Red) */
+.confirmation-modal button.no-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.confirmation-modal button.no-button:hover {
+  background-color: #e53935;
+}
+
+/* Disabled button style */
+.confirmation-modal button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Style for messages shown during the delete process */
+.manage-students-container p {
+  font-size: 16px;
+  text-align: center;
+  color: #333;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* Add/Delete/Cancel message styles */
+.manage-students-container p {
+  color: #f44336; /* Red color for deletion confirmation */
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Style for the Add, Edit, and Delete buttons in table cells */
+table td button {
+  padding: 8px;
+  font-size: 12px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+table td button img {
+  width: 20px;
+  height: 20px;
+}
+
+table td button:hover {
+  background-color: #45a049;
+}
+
+/* Additional styling for Cancel and Confirm buttons */
+.confirmation-modal button.cancel-button {
+  background-color: #ddd;
+  color: #333;
+}
+
+.confirmation-modal button.cancel-button:hover {
+  background-color: #ccc;
+}
+
+/* Footer styling */
+footer {
+  margin-top: 40px; /* Ensures additional gap */
+  padding: 20px;
+  background-color: #f1f1f1;
+  text-align: center;
 }

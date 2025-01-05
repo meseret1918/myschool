@@ -3,20 +3,20 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ role, children }) => {
   const user = JSON.parse(localStorage.getItem('user')); // Fetch user details from localStorage
-  const location = useLocation();
+  const location = useLocation(); // Get the current location for redirecting after login
 
+  // If no user is authenticated, redirect to the login page
   if (!user) {
-    // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} />;
   }
 
+  // If the user's role doesn't match the required role, redirect them to their respective dashboard
   if (user.role !== role) {
-    // Redirect to the dashboard based on user role
     const redirectPath = `/${user.role}/dashboard`;
     return <Navigate to={redirectPath} />;
   }
 
-  // Render the protected component
+  // If everything is fine, render the protected component
   return children;
 };
 

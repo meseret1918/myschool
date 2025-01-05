@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Components
-import Header from './components/Nav';
+import Navbar from './components/Navbar';
+import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
 import About from './components/About';
@@ -41,7 +42,6 @@ import ManageExams from './components/Teacher/ManageExams';
 
 // Parent Management Components
 import SendMessageParent from './components/Parent/SendMessage'; // Ensure this is defined
-// Define or import these components if they are part of the project:
 import ViewAttendance from './components/Parent/ViewAttendance';
 import ViewEvents from './components/Parent/ViewEvents';
 import ViewMarks from './components/Parent/ViewMarks';
@@ -55,6 +55,9 @@ import SendMessageAdmin from './components/Admin/SendMessage';
 
 // ProtectedRoute Component
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Student Edit and Delete Components
+import EditStudentForm from './components/Admin/EditStudentForm';
 
 const App = () => {
   const isAuthenticated = JSON.parse(localStorage.getItem('isAuthenticated') || 'false');
@@ -93,6 +96,9 @@ const App = () => {
           <Route path="/admin/add-teacher" element={renderProtectedRoute("admin", AddTeacher)} />
           <Route path="/admin/edit-teacher/:id" element={renderProtectedRoute("admin", EditTeacher)} />
           <Route path="/admin/send-message" element={renderProtectedRoute("admin", SendMessageAdmin)} />
+
+          {/* Routes for Editing and Deleting Students */}
+          <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />
 
           {/* Protected Routes for Teacher */}
           <Route path="/teacher/dashboard" element={renderProtectedRoute("teacher", TeacherDashboard)} />

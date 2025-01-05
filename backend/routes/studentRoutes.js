@@ -1,38 +1,29 @@
 const express = require('express');
-const mysql = require('mysql2');  // Import MySQL package
 const router = express.Router();
-
-// MySQL connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',           // Your MySQL username
-    password: 'root12',     // Your MySQL password
-    database: 'school_management', // Your MySQL database name
-});
-
-// Connect to MySQL
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-    } else {
-        console.log('Connected to the MySQL database');
-    }
-});
+const Student = require('../models/Student');
 
 // Get all students
 router.get('/', async (req, res) => {
     try {
-        const query = 'SELECT * FROM students';  // SQL query to fetch all students
-        db.query(query, (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'Failed to fetch students' });
-            }
-            res.json(results);  // Send the result as a JSON response
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Error fetching students' });
+        const students = await Student.findAll();
+        res.status(200).json(students);
+    } catch (error) {
+        console.error('Error fetching students:', error);
+        res.status(500).json({ message: 'Error fetching students. Please try again later.' });
+    }
+});
+
+// Get a specific student by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const student = await Student.findByPk(req.params.id);
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+        res.status(200).json(student);
+    } catch (error) {
+        console.error('Error fetching student:', error);
+        res.status(500).json({ message: 'Error fetching student. Please try again later.' });
     }
 });
 
@@ -46,30 +37,70 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Name, email, and class name are required' });
         }
 
-        // SQL query to insert a new student
-        const query = 'INSERT INTO students (name, email, class_name, parent_id, phone, date_of_birth, address) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
-        db.query(query, [name, email, class_name, parent_id, phone, date_of_birth, address], (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'Failed to add student' });
-            }
-
-            // Return the new student data along with the insert ID
-            res.status(201).json({
-                id: results.insertId,
-                name,
-                email,
-                class_name,
-                parent_id,
-                phone,
-                date_of_birth,
-                address
-            });
+        const newStudent = await Student.create({
+            name,
+            email,
+            class_name,
+            parent_id,
+            phone,
+            date_of_birth,
+            address
         });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Error adding student' });
+
+        res.status(201).json(newStudent); // Return the created student object
+    } catch (error) {
+        console.error('Error adding student:', error);
+        res.status(500).json({ message: 'Error adding student. Please try again later.' });
+    }
+});
+
+// Edit a student (Update student data)
+router.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, class_name, parent_id, phone, date_of_birth, address } = req.body;
+
+        const student = await Student.findByPk(id);
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        // Update student data
+        student.name = name || student.name;
+        student.email = email || student.email;
+        student.class_name = class_name || student.class_name;
+        student.parent_id = parent_id || student.parent_id;
+        student.phone = phone || student.phone;
+        student.date_of_birth = date_of_birth || student.date_of_birth;
+        student.address = address || student.address;
+
+        await student.save();
+
+        res.status(200).json(student);
+    } catch (error) {
+        console.error('Error updating student:', error);
+        res.status(500).json({ message: 'Error updating student. Please try again later.' });
+    }
+});
+
+// Delete a student
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const student = await Student.findByPk(id);
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        await student.destroy();
+
+        res.status(200).json({ message: 'Student deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting student:', error);
+        res.status(500).json({ message: 'Error deleting student. Please try again later.' });
     }
 });
 

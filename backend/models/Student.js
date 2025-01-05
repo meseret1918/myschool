@@ -1,11 +1,11 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Assuming this is your sequelize instance
+const sequelize = require('../config/db'); // Your Sequelize configuration
 
 const Student = sequelize.define('Student', {
     id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     name: {
         type: DataTypes.STRING,
@@ -13,7 +13,8 @@ const Student = sequelize.define('Student', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     class_name: {
         type: DataTypes.STRING,
@@ -21,7 +22,7 @@ const Student = sequelize.define('Student', {
     },
     parent_id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     phone: {
         type: DataTypes.STRING,
@@ -37,12 +38,12 @@ const Student = sequelize.define('Student', {
     },
     created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // Automatically set to current timestamp when creating a new record
+        defaultValue: DataTypes.NOW, // Automatically sets the current timestamp
         allowNull: false
     }
 }, {
     tableName: 'students',
-    timestamps: false // If you do not want Sequelize to manage the createdAt and updatedAt fields automatically
+    timestamps: false // If you manually manage timestamps
 });
 
 module.exports = Student;

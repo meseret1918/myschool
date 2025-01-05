@@ -13,8 +13,7 @@ const Home = () => {
   return (
     <div className="text-center" style={{ paddingBottom: '80px' }}>
       <div className="bg-primary text-white py-5">
-        <h1>Welcome to the School Management System</h1>
-        <p className="lead">Simplifying school operations for administrators, teachers, parents, and students.</p>
+        <p className="lead"></p>
         
         {/* Learn More Button */}
         <button onClick={handleLearnMoreClick} className="btn btn-light mt-3">

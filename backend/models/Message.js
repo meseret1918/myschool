@@ -12,17 +12,21 @@ const Message = sequelize.define('Message', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Users',
+            model: 'users', // Matches the table name in the User model
             key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     },
     recipientId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Users',
+            model: 'users', // Matches the table name in the User model
             key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     },
     recipientRole: {
         type: DataTypes.ENUM('student', 'teacher', 'parent', 'admin'),
@@ -44,16 +48,7 @@ const Message = sequelize.define('Message', {
     timestamps: false,
 });
 
-// Sync the model with the database
-sequelize.sync({ alter: true }) // Using `alter: true` to apply changes without dropping the table
-    .then(() => {
-        console.log('Messages table has been synchronized.');
-    })
-    .catch((error) => {
-        console.error('Unable to synchronize table:', error);
-    });
-
-// Define associations if needed
+// Define associations
 Message.associate = (models) => {
     Message.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
     Message.belongsTo(models.User, { foreignKey: 'recipientId', as: 'recipient' });
