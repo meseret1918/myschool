@@ -1,3 +1,5 @@
+// models/Teacher.js
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Correct path to db.js
 
@@ -53,7 +55,7 @@ const Teacher = sequelize.define('Teacher', {
         allowNull: false,
     },
 }, {
-    tableName: 'Teachers',  // Table name in MySQL
+    tableName: 'Teachers',  // Ensure this matches the table name in MySQL
     timestamps: false,      // Disable createdAt and updatedAt fields
 });
 

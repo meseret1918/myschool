@@ -3,7 +3,7 @@ import React from "react";
 const Header = ({ isAuthenticated, role }) => {
   return (
     <header>
-      <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#007ACC" }}>
+      <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#41726e" }}>
         <div className="container">
           {/* Logo */}
           <a className="navbar-brand d-flex align-items-center" href="/">

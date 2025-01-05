@@ -1,13 +1,31 @@
-const Teacher = require('../models/Teacher');
+const Teacher = require('../models/Teacher'); // Sequelize model
 
 // Create a new teacher
 exports.createTeacher = async (req, res) => {
-    const { name, subject, grade, email } = req.body;
+    const { FirstName, LastName, DateOfBirth, Gender, ContactNumber, Email, Qualification, ExperienceYears, HireDate, SubjectsTaught, Salary } = req.body;
+
+    // Validate required fields
+    if (!FirstName || !LastName || !Email || !DateOfBirth || !Salary) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
     try {
-        const teacher = new Teacher({ name, subject, grade, email });
-        await teacher.save();
+        const teacher = await Teacher.create({
+            FirstName,
+            LastName,
+            DateOfBirth,
+            Gender,
+            ContactNumber,
+            Email,
+            Qualification,
+            ExperienceYears,
+            HireDate,
+            SubjectsTaught,
+            Salary
+        });
         res.status(201).json({ message: 'Teacher created successfully', teacher });
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({ message: 'Error creating teacher', error: err.message });
     }
 };
@@ -15,9 +33,13 @@ exports.createTeacher = async (req, res) => {
 // Get all teachers
 exports.getAllTeachers = async (req, res) => {
     try {
-        const teachers = await Teacher.find();
+        const teachers = await Teacher.findAll();
+        if (teachers.length === 0) {
+            return res.status(404).json({ message: 'No teachers found' });
+        }
         res.status(200).json(teachers);
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({ message: 'Error fetching teachers', error: err.message });
     }
 };
@@ -26,12 +48,13 @@ exports.getAllTeachers = async (req, res) => {
 exports.getTeacherById = async (req, res) => {
     const { teacherId } = req.params;
     try {
-        const teacher = await Teacher.findById(teacherId);
+        const teacher = await Teacher.findByPk(teacherId); // Using findByPk for Primary Key search
         if (!teacher) {
             return res.status(404).json({ message: 'Teacher not found' });
         }
         res.status(200).json(teacher);
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({ message: 'Error fetching teacher', error: err.message });
     }
 };
@@ -39,18 +62,44 @@ exports.getTeacherById = async (req, res) => {
 // Update teacher details
 exports.updateTeacher = async (req, res) => {
     const { teacherId } = req.params;
-    const { name, subject, grade, email } = req.body;
+    const { FirstName, LastName, DateOfBirth, Gender, ContactNumber, Email, Qualification, ExperienceYears, HireDate, SubjectsTaught, Salary } = req.body;
+
+    // Validate required fields
+    if (!FirstName || !LastName || !Email || !DateOfBirth || !Salary) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
     try {
-        const teacher = await Teacher.findByIdAndUpdate(
-            teacherId, 
-            { name, subject, grade, email }, 
-            { new: true }
+        const [updated] = await Teacher.update(
+            { 
+                FirstName, 
+                LastName, 
+                DateOfBirth, 
+                Gender, 
+                ContactNumber, 
+                Email, 
+                Qualification, 
+                ExperienceYears, 
+                HireDate, 
+                SubjectsTaught, 
+                Salary 
+            },
+            {
+                where: { TeacherID: teacherId }, // Matching the teacher by ID
+                returning: true, // To return the updated object
+                plain: true // Ensures the returned value is a plain object
+            }
         );
-        if (!teacher) {
+
+        if (!updated) { // 'updated' will be 0 if no rows were affected
             return res.status(404).json({ message: 'Teacher not found' });
         }
-        res.status(200).json({ message: 'Teacher updated successfully', teacher });
+
+        // Fetch the updated teacher details to send in response
+        const updatedTeacher = await Teacher.findByPk(teacherId);
+        res.status(200).json({ message: 'Teacher updated successfully', teacher: updatedTeacher });
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({ message: 'Error updating teacher', error: err.message });
     }
 };
@@ -59,12 +108,16 @@ exports.updateTeacher = async (req, res) => {
 exports.deleteTeacher = async (req, res) => {
     const { teacherId } = req.params;
     try {
-        const teacher = await Teacher.findByIdAndDelete(teacherId);
-        if (!teacher) {
+        const deleted = await Teacher.destroy({
+            where: { TeacherID: teacherId }
+        });
+
+        if (!deleted) {
             return res.status(404).json({ message: 'Teacher not found' });
         }
         res.status(200).json({ message: 'Teacher deleted successfully' });
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({ message: 'Error deleting teacher', error: err.message });
     }
 };

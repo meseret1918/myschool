@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -40,10 +39,10 @@ sequelize.authenticate()
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/teachers', teacherRoutes);
+app.use('/api/teachers', teacherRoutes);  // Make sure this route is correctly linked
 app.use('/api/events', eventRoutes);
 app.use('/api/parents', parentRoutes);
-app.use('/api', dashboardRoutes); // Add the new dashboard route here
+app.use('/api', dashboardRoutes);  // Add the new dashboard route here
 
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {

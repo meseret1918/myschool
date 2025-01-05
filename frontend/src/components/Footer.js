@@ -10,7 +10,7 @@ const Footer = () => {
 
 const styles = {
   footer: {
-    backgroundColor: '#007ACC',
+    backgroundColor: '#41726e',
     color: 'white',
     padding: '2px 0', // Added more padding for better visual appearance
     textAlign: 'center',
