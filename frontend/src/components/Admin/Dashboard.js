@@ -50,6 +50,7 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isResourcesVisible, setIsResourcesVisible] = useState(false); // Toggle visibility of the Manage Resources section
 
   useEffect(() => {
     fetchDashboardData(setCounts, setLoading, setError); // Fetch data when component mounts
@@ -59,11 +60,21 @@ const AdminDashboard = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error-message">Error: {error}</div>;
 
+  // Toggle the visibility of the resources
+  const toggleResourcesVisibility = () => setIsResourcesVisible(prevState => !prevState);
+
   return (
     <div className="admin-dashboard">
       {/* Navbar Section */}
       <nav className="navbar">
         <h1 className="navbar-title">Admin Dashboard</h1>
+
+        {/* Manage Resources clickable title with Scroll Icon */}
+        <h2 className="manage-resources" onClick={toggleResourcesVisibility} style={{ cursor: 'pointer' }}>
+          Manage Resources
+          {/* Scroll Icon */}
+          <i className={`fas fa-chevron-${isResourcesVisible ? 'up' : 'down'}`} style={{ marginLeft: '8px' }}></i>
+        </h2>
       </nav>
 
       {/* Dashboard Stats and Links Section - Flexbox Layout */}
@@ -77,11 +88,8 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Dashboard Links Section */}
-        <div className="dashboard-links-section">
-          <h2 className="dashboard-title">Manage Resources</h2>
-          <DashboardLinks />
-        </div>
+        {/* Dashboard Links Section (conditional rendering based on visibility) */}
+        {isResourcesVisible && <div className="dashboard-links-section"><DashboardLinks /></div>}
       </section>
     </div>
   );

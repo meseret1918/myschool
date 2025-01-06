@@ -1,13 +1,11 @@
-// models/Teacher.js
-
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Correct path to db.js
+const sequelize = require('../config/db'); // Your Sequelize configuration
 
 const Teacher = sequelize.define('Teacher', {
     TeacherID: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
     },
     FirstName: {
         type: DataTypes.STRING(50),
@@ -17,12 +15,12 @@ const Teacher = sequelize.define('Teacher', {
         type: DataTypes.STRING(50),
         allowNull: false,
     },
-    DateOfBirth: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    },
     Gender: {
         type: DataTypes.STRING(10),
+        allowNull: false,
+    },
+    Age: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     ContactNumber: {
@@ -55,8 +53,8 @@ const Teacher = sequelize.define('Teacher', {
         allowNull: false,
     },
 }, {
-    tableName: 'Teachers',  // Ensure this matches the table name in MySQL
-    timestamps: false,      // Disable createdAt and updatedAt fields
+    tableName: 'teachers',
+    timestamps: false, // Since created_at and updated_at are not in your table
 });
 
 module.exports = Teacher;

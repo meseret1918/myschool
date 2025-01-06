@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './styles/EditTeacher.css'; // Importing external CSS file
 
 const EditTeacher = () => {
   const { id } = useParams(); // Extract the teacher ID from the URL
@@ -8,8 +7,8 @@ const EditTeacher = () => {
   const [teacher, setTeacher] = useState({
     FirstName: '',
     LastName: '',
-    DateOfBirth: '',
     Gender: '',
+    Age: '', 
     ContactNumber: '',
     Email: '',
     Qualification: '',
@@ -20,6 +19,7 @@ const EditTeacher = () => {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [successMessage, setSuccessMessage] = useState(null); // Success message state
 
   // Fetch the teacher data on component mount
   useEffect(() => {
@@ -57,37 +57,89 @@ const EditTeacher = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(teacher),
       });
+
       if (!response.ok) {
-        throw new Error(`Failed to update: ${response.statusText}`);
+        const errorDetails = await response.text(); // Get the response text for detailed error
+        throw new Error(`Failed to update: ${response.statusText}. Details: ${errorDetails}`);
       }
-      navigate('/admin/manage-teachers'); // Redirect to Manage Teachers
+
+      setSuccessMessage('Teacher successfully updated!');
+      setTimeout(() => {
+        navigate('/admin/manage-teachers');
+      }, 2000);
     } catch (err) {
-      setError('Error updating teacher. Please try again later.');
+      setError(`Error updating teacher: ${err.message}`); // Show detailed error message
       console.error('Error updating teacher:', err);
     }
   };
 
   if (loading) return <p>Loading teacher data...</p>;
-  if (error) return <p className="error">{error}</p>;
+  if (error) return <p style={{ color: 'red', fontSize: '16px' }}>{error}</p>;
+
+  const formStyle = {
+    maxWidth: '600px',
+    margin: 'auto',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    backgroundColor: '#f9f9f9',
+    marginBottom: '30px',
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px',
+    margin: '5px 0',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  const buttonStyle = {
+    padding: '10px 20px',
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  };
+
+  const successStyle = {
+    color: 'green',
+    fontSize: '18px',
+    marginBottom: '20px',
+  };
 
   return (
-    <div className="edit-teacher">
+    <div style={formStyle}>
       <h2>Edit Teacher</h2>
-      <form onSubmit={handleUpdateTeacher} className="form-container">
+
+      {successMessage && <p style={successStyle}>{successMessage}</p>} {/* Success message */}
+
+      <form onSubmit={handleUpdateTeacher}>
         {Object.keys(teacher).map((key) => (
-          <input
-            key={key}
-            type={key === 'DateOfBirth' || key === 'HireDate' ? 'date' : 'text'}
-            name={key}
-            value={teacher[key]}
-            placeholder={key}
-            onChange={handleInputChange}
-            required
-          />
+          <div key={key} className="form-group">
+            <label htmlFor={key}>{key.replace(/([A-Z])/g, ' $1')}</label>
+            <input
+              type={
+                key === 'Age' || key === 'ExperienceYears' || key === 'Salary'
+                  ? 'number'
+                  : key === 'HireDate'
+                  ? 'date'
+                  : 'text'
+              }
+              id={key}
+              name={key}
+              value={teacher[key]}
+              placeholder={key.replace(/([A-Z])/g, ' $1')}
+              onChange={handleInputChange}
+              required
+              style={inputStyle}
+            />
+          </div>
         ))}
-        <button type="submit" className="btn update-btn">Update Teacher</button>
+        <button type="submit" style={buttonStyle}>Update Teacher</button>
       </form>
-      <div className="spacer"></div>
     </div>
   );
 };

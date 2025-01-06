@@ -1,201 +1,181 @@
-/* General Layout */
-.manage-teachers {
-  padding: 15px;
-  max-width: 100%;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
-  font-size: 12px; /* Minimized font size for compact layout */
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+/* Main container for the Manage Teachers section */
+.manage-teachers-container {
+  padding: 10px; /* Reduced padding */
+  max-width: 100%; /* Ensure full width usage */
+  margin: auto;
+  padding-bottom: 80px; /* Increased gap between content and footer */
+  overflow-x: hidden; /* Disable horizontal scroll */
 }
 
-.title {
+h2, h3 {
   text-align: center;
-  margin-bottom: 15px;
-  font-size: 18px; /* Reduced title size */
-  color: #333;
+  margin-bottom: 10px; /* Reduced margin */
 }
 
-.form-container {
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.form-container h3 {
-  margin-bottom: 8px;
-  font-size: 16px; /* Smaller subheading */
-  color: #555;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin: 8px 0;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  font-size: 12px;
-}
-
-button {
-  padding: 8px 10px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px; /* Reduced button text size */
-  transition: background-color 0.3s ease;
-}
-
-button.add-btn {
-  background-color: #28a745;
-  color: white;
-}
-
-button.add-btn:hover {
-  background-color: #218838;
-}
-
-button.update-btn {
-  background-color: #007bff;
-  color: white;
-}
-
-button.update-btn:hover {
-  background-color: #0056b3;
-}
-
-button.delete-btn {
-  background-color: #dc3545;
-  color: white;
-}
-
-button.delete-btn:hover {
-  background-color: #c82333;
-}
-
-button.toggle-btn {
-  background-color: #0730ff;
-  color: white;
-}
-
-button.toggle-btn:hover {
-  background-color: #00e08e;
-}
-
-.teacher-table {
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
-  background-color: white;
-  border-radius: 5px;
-  overflow: hidden;
-  font-size: 12px; /* Compact table font size */
-  table-layout: fixed; /* Ensures all columns fit within the container */
-  margin-bottom: 30px; /* Adds margin to create a gap between the table and footer */
+  margin-top: 10px; /* Reduced margin */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  table-layout: fixed; /* Fixed layout to ensure columns are evenly distributed */
 }
 
-.teacher-table th,
-.teacher-table td {
-  padding: 8px;
-  border: 1px solid #ddd;
+th, td {
+  padding: 4px 6px; /* Reduced padding */
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis; /* Truncate overflowing text */
-  white-space: nowrap; /* Prevent wrapping */
+  border: 1px solid #ddd;
+  font-size: 10px; /* Smaller font size to fit more content */
 }
 
-.teacher-table th {
+th {
   background-color: #f4f4f4;
-  color: #333;
-  font-weight: bold;
+  white-space: nowrap; /* Prevent header text wrapping */
+  overflow: hidden; /* Hide overflowed text */
+  text-overflow: ellipsis; /* Show ellipsis for overflowed text */
 }
 
-.teacher-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+td {
+  background-color: #fff;
+  white-space: nowrap; /* Prevent text wrapping in table cells */
+  overflow: hidden; /* Hide overflowed text */
+  text-overflow: ellipsis; /* Show ellipsis for overflowed text */
 }
 
-.teacher-table tr:hover {
-  background-color: #f1f1f1;
+/* Button Styles */
+button {
+  padding: 4px 8px; /* Smaller padding */
+  font-size: 10px; /* Smaller font size */
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
-/* Success and Error Messages */
-.success {
-  color: green;
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: center;
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
 }
 
-.error {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* Positioning the "Add New Teacher" and "Back to Dashboard" buttons */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.btn.add-btn {
+/* Add, Edit, Delete button styles */
+.add-button,
+.edit-button,
+.delete-button {
   background-color: #4CAF50;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
 }
 
-.btn.add-btn:hover {
+.add-button:hover,
+.edit-button:hover,
+.delete-button:hover {
   background-color: #45a049;
 }
 
-.back-to-dashboard {
-  background-color: #6c757d; /* Secondary button color */
+/* Delete confirmation modal styling */
+.confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.confirmation-modal > div {
+  background-color: white;
+  padding: 20px; /* Reduced padding */
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Confirmation message text style */
+.confirmation-modal p.message {
+  margin-bottom: 10px; /* Reduced margin */
+  font-size: 16px; /* Smaller font size */
+  color: #333;
+  font-weight: bold;
+}
+
+.confirmation-modal div.buttons {
+  display: flex;
+  justify-content: center; /* Center align buttons */
+  gap: 20px; /* Space between the buttons */
+  margin-top: 10px; /* Reduced margin */
+}
+
+.confirmation-modal button.yes-button,
+.confirmation-modal button.no-button {
+  padding: 8px 16px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  border-radius: 4px;
+}
+
+.confirmation-modal button.yes-button {
+  background-color: #4CAF50;
   color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 12px;
+}
+
+.confirmation-modal button.yes-button:hover {
+  background-color: #45a049;
+}
+
+.confirmation-modal button.no-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.confirmation-modal button.no-button:hover {
+  background-color: #e53935;
+}
+
+.confirmation-modal button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Message during delete process */
+.manage-teachers-container p {
+  font-size: 14px; /* Smaller font size */
+  text-align: center;
+  color: #333;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* Add/Edit/Delete button style within table cells */
+table td button {
+  padding: 4px;
+  font-size: 8px; /* Smaller button font size */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.back-to-dashboard:hover {
-  background-color: #5a6268;
+table td button img {
+  width: 16px; /* Smaller icon */
+  height: 16px;
 }
 
-/* Responsive Layout */
-@media (max-width: 768px) {
-  .manage-teachers {
-    padding: 10px;
-  }
+table td button:hover {
+  background-color: #45a049;
+}
 
-  .form-container {
-    padding: 8px;
-  }
-
-  button {
-    font-size: 10px;
-    padding: 6px 8px;
-  }
-
-  .teacher-table {
-    font-size: 10px;
-  }
-
-  .teacher-table th,
-  .teacher-table td {
-    padding: 6px;
-  }
+/* Footer Styling */
+footer {
+  margin-top: 80px; /* Increased gap between content and footer */
+  padding: 20px;
+  background-color: #f1f1f1;
+  text-align: center;
 }
