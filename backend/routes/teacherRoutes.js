@@ -4,6 +4,9 @@ const db = require('../config/db'); // Database connection
 const { Op } = require('sequelize'); // Optional for advanced querying
 const Teacher = require('../models/Teacher'); // Sequelize model for the teachers table
 
+// Middleware to check body parsing
+router.use(express.json());
+
 // Get all teachers
 router.get('/', async (req, res) => {
     try {
@@ -74,6 +77,12 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
+        // Check if the teacher already exists (optional check for unique constraint)
+        const existingTeacher = await Teacher.findOne({ where: { Email } });
+        if (existingTeacher) {
+            return res.status(400).json({ error: 'Teacher with this email already exists' });
+        }
+
         // Create new teacher
         const newTeacher = await Teacher.create({
             FirstName,
@@ -134,9 +143,15 @@ router.put('/:id', async (req, res) => {
             return res.status(400).json({ error: 'ExperienceYears must be a valid number' });
         }
 
-        // Validate email format
+        // Validate email format and check for duplicates when email is updated
         if (Email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(Email)) {
             return res.status(400).json({ error: 'Invalid email format' });
+        }
+        if (Email && Email !== teacher.Email) {
+            const existingTeacher = await Teacher.findOne({ where: { Email } });
+            if (existingTeacher) {
+                return res.status(400).json({ error: 'Teacher with this email already exists' });
+            }
         }
 
         // Update teacher data

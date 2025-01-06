@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 
 const AddTeacher = () => {
@@ -79,10 +79,12 @@ const AddTeacher = () => {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json(); // Parse response JSON
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error response from server:', errorData);
-        setErrorMessage(errorData.message || 'Error adding teacher. Please try again later.');
+        console.error('Error response from server:', data);
+        setErrorMessage(data.message || 'Error adding teacher. Please try again later.');
+        setLoading(false);
         return;
       }
 
