@@ -32,6 +32,8 @@ import EditEvent from './components/Admin/EditEvent';
 import DeleteEvent from './components/Admin/DeleteEvent';
 import AddTeacher from './components/Admin/AddTeacher';
 import EditTeacher from './components/Admin/EditTeacher';
+import AddParentForm from './components/Admin/AddParentForm';
+import EditParentForm from './components/Admin/EditParentForm';
 
 // Teacher Management Components
 import ManageMarks from './components/Teacher/ManageMarks';
@@ -96,6 +98,10 @@ const App = () => {
           <Route path="/admin/add-teacher" element={renderProtectedRoute("admin", AddTeacher)} />
           <Route path="/admin/edit-teacher/:id" element={renderProtectedRoute("admin", EditTeacher)} />
           <Route path="/admin/send-message" element={renderProtectedRoute("admin", SendMessageAdmin)} />
+
+          {/* Updated Routes for Add/Edit Parent */}
+          <Route path="/admin/add-parent" element={renderProtectedRoute("admin", AddParentForm)} />
+          <Route path="/admin/edit-parent/:id" element={renderProtectedRoute("admin", EditParentForm)} />
 
           {/* Routes for Editing and Deleting Students */}
           <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />

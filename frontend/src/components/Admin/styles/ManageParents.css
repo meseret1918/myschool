@@ -1,12 +1,21 @@
-.manage-parents {
+.manage-parents-container {
     padding: 2rem;
     font-family: Arial, sans-serif;
+    padding-bottom: 3rem; /* Ensure space for footer */
 }
 
-h1 {
+h2 {
     text-align: center;
     margin-bottom: 1.5rem;
     color: #333;
+    font-size: 2rem; /* Adjusted font size */
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #666;
+    font-size: 1.5rem; /* Adjusted font size */
 }
 
 .table {
@@ -18,6 +27,7 @@ h1 {
 .table th, .table td {
     padding: 1rem;
     text-align: center;
+    font-size: 1rem; /* Added font size */
 }
 
 .table thead {
@@ -28,31 +38,33 @@ h1 {
     background-color: #f9f9f9;
 }
 
-.add-button {
-    background-color: #4caf50; /* Green */
+.add-button,
+.edit-button,
+.delete-button {
+    background-color: #4caf50; /* Green for add */
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    font-size: 1rem; /* Adjusted font size for icons inside buttons */
+}
+
+.add-button {
+    background-color: #4caf50;
 }
 
 .edit-button {
-    background-color: #ffc107; /* Yellow */
-    color: black;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #ffc107; /* Yellow for edit */
 }
 
 .delete-button {
-    background-color: #f44336; /* Red */
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #f44336; /* Red for delete */
 }
 
 .add-button:hover {
@@ -65,4 +77,69 @@ h1 {
 
 .delete-button:hover {
     background-color: #d32f2f;
+}
+
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.confirmation-modal div {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.confirmation-modal .message {
+    font-size: 1.2rem; /* Adjusted font size */
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-modal .buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.confirmation-modal .buttons button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem; /* Adjusted font size for confirmation buttons */
+}
+
+.confirmation-modal .yes-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+.confirmation-modal .no-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.confirmation-modal .yes-button:hover {
+    background-color: #45a049;
+}
+
+.confirmation-modal .no-button:hover {
+    background-color: #d32f2f;
+}
+
+footer {
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    position: relative;
+    margin-top: 2rem; /* Adds space between content and footer */
+    font-size: 1rem; /* Added font size for footer text */
 }
