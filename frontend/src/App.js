@@ -41,6 +41,8 @@ import SendMessageTeacher from './components/Teacher/SendMessage';
 import ManageAttendance from './components/Teacher/ManageAttendance';
 import ManageClasses from './components/Teacher/ManageClasses';
 import ManageExams from './components/Teacher/ManageExams';
+import EditAttendance from './components/Teacher/EditAttendance';
+
 
 // Parent Management Components
 import SendMessageParent from './components/Parent/SendMessage'; // Ensure this is defined
@@ -105,6 +107,7 @@ const App = () => {
 
           {/* Routes for Editing and Deleting Students */}
           <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />
+          <Route path="/teacher/edit/:id" component={renderProtectedRoute("teacher",EditAttendance)} />
 
           {/* Protected Routes for Teacher */}
           <Route path="/teacher/dashboard" element={renderProtectedRoute("teacher", TeacherDashboard)} />
@@ -114,6 +117,7 @@ const App = () => {
           <Route path="/teacher/manage-attendance" element={renderProtectedRoute("teacher", ManageAttendance)} />
           <Route path="/teacher/manage-classes" element={renderProtectedRoute("teacher", ManageClasses)} />
           <Route path="/teacher/manage-exams" element={renderProtectedRoute("teacher", ManageExams)} />
+         
 
           {/* Protected Routes for Parent */}
           <Route path="/parent/dashboard" element={renderProtectedRoute("parent", ParentDashboard)} />

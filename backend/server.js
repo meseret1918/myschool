@@ -2,16 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const { Sequelize } = require('sequelize');
-
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-const messageRoutes = require('./routes/messageRoutes');
-const studentRoutes = require('./routes/studentRoutes');
-const teacherRoutes = require('./routes/teacherRoutes');
-const eventRoutes = require('./routes/eventRoutes');
-const parentRoutes = require('./routes/parentRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes'); // Import the new dashboard routes
 
 // Load environment variables
 dotenv.config();
@@ -24,7 +14,7 @@ app.use(cors());
 app.use(express.json()); // To parse incoming JSON
 
 // MySQL connection setup
-const sequelize = require('./config/db'); // Correct path to db.js file
+const sequelize = require('./config/db'); // Sequelize instance
 
 // Test the database connection
 sequelize.authenticate()
@@ -35,14 +25,27 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-// Routes
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const studentRoutes = require('./routes/studentRoutes');
+const teacherRoutes = require('./routes/teacherRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const parentRoutes = require('./routes/parentRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const studentAttendanceRoutes = require('./routes/studentAttendanceRoutes');
+const marksRoutes = require('./routes/marksRoutes');
+
+// Define API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/teachers', teacherRoutes);  // Make sure this route is correctly linked
+app.use('/api/teachers', teacherRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/parents', parentRoutes);
-app.use('/api', dashboardRoutes);  // Add the new dashboard route here
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/attendance', studentAttendanceRoutes);
+app.use('/api/marks', marksRoutes);
 
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {
@@ -52,6 +55,11 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
 }
+
+// Handle 404 errors (route not found)
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

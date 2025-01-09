@@ -101,7 +101,7 @@ const ManageStudents = () => {
           <table>
             <thead>
               <tr>
-                <th>#</th>
+                <th>No</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Class</th>

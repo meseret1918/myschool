@@ -17,6 +17,8 @@ const ManageAttendance = () => {
         status2: ''
     });
     const [successMessage, setSuccessMessage] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null); // Record to be deleted
     const navigate = useNavigate();
 
     // Fetch attendance data
@@ -60,14 +62,12 @@ const ManageAttendance = () => {
     // Handle save action
     const handleSave = async () => {
         try {
-            // Check if the record exists in the attendance state
             const recordExists = attendance.find((record) => record.id === formData.id);
-
             if (!recordExists) {
                 throw new Error('Record not found');
             }
 
-            const response = await fetch(`/api/attendance/${formData.id}`, {
+            const response = await fetch(`http://localhost:5000/api/attendance/${formData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const ManageAttendance = () => {
             setTimeout(() => {
                 setSuccessMessage('');
                 navigate('/manage-attendance');
-            }, 3000); // Redirect after 3 seconds
+            }, 3000);
             setEditingRecord(null); // Close the edit form after saving
         } catch (err) {
             console.error(err.message);
@@ -101,16 +101,21 @@ const ManageAttendance = () => {
     };
 
     // Handle delete action
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this record?');
-        if (confirmDelete) {
+    const handleDelete = (id) => {
+        setRecordToDelete(id);
+        setIsModalOpen(true); // Show the confirmation modal
+    };
+
+    const confirmDelete = async () => {
+        if (recordToDelete) {
             try {
-                const response = await fetch(`/api/attendance/${id}`, {
+                const response = await fetch(`http://localhost:5000/api/attendance/${recordToDelete}`, {
                     method: 'DELETE',
                 });
 
                 if (response.ok) {
-                    setAttendance((prev) => prev.filter((record) => record.id !== id));
+                    setAttendance((prev) => prev.filter((record) => record.id !== recordToDelete));
+                    setIsModalOpen(false); // Close the modal after delete
                 } else {
                     throw new Error(`Error deleting record. Status: ${response.status}`);
                 }
@@ -119,6 +124,10 @@ const ManageAttendance = () => {
                 alert(`Failed to delete record: ${err.message}`);
             }
         }
+    };
+
+    const cancelDelete = () => {
+        setIsModalOpen(false); // Close the confirmation modal without deleting
     };
 
     // Conditional rendering for loading, error, or empty states
@@ -226,11 +235,7 @@ const ManageAttendance = () => {
                                 style={{ padding: '5px', marginLeft: '10px' }}
                             />
                         </div>
-
-                        {/* Cascading Line for Save and Cancel Buttons */}
-                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
-                            <hr style={{ flex: 1, marginRight: '10px', border: '1px solid #ccc' }} />
-                            
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <button
                                 type="button"
                                 onClick={handleSave}
@@ -238,15 +243,12 @@ const ManageAttendance = () => {
                                     backgroundColor: '#4CAF50',
                                     color: 'white',
                                     padding: '10px 20px',
-                                    border: 'none',
-                                    fontSize: '16px',
+                                    margin: '10px',
                                     cursor: 'pointer',
-                                    margin: '0 10px',
                                 }}
                             >
                                 Save
                             </button>
-
                             <button
                                 type="button"
                                 onClick={handleCancel}
@@ -254,16 +256,12 @@ const ManageAttendance = () => {
                                     backgroundColor: '#f44336',
                                     color: 'white',
                                     padding: '10px 20px',
-                                    border: 'none',
-                                    fontSize: '16px',
+                                    margin: '10px',
                                     cursor: 'pointer',
-                                    margin: '0 10px',
                                 }}
                             >
                                 Cancel
                             </button>
-
-                            <hr style={{ flex: 1, marginLeft: '10px', border: '1px solid #ccc' }} />
                         </div>
                     </form>
                 </div>
@@ -290,9 +288,7 @@ const ManageAttendance = () => {
                             <tr key={record.id}>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.id}</td>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.index_number}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ccc' }}>
-                                    {new Date(record.date).toLocaleDateString()}
-                                </td>
+                                <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.date}</td>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.month}</td>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.year}</td>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.time}</td>
@@ -300,28 +296,26 @@ const ManageAttendance = () => {
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>{record.status2}</td>
                                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>
                                     <button
+                                        onClick={() => handleEdit(record.id)}
                                         style={{
                                             backgroundColor: '#4CAF50',
                                             color: 'white',
-                                            border: 'none',
                                             padding: '5px 10px',
                                             margin: '5px',
                                             cursor: 'pointer',
                                         }}
-                                        onClick={() => handleEdit(record.id)}
                                     >
                                         Edit
                                     </button>
                                     <button
+                                        onClick={() => handleDelete(record.id)}
                                         style={{
                                             backgroundColor: '#f44336',
                                             color: 'white',
-                                            border: 'none',
                                             padding: '5px 10px',
                                             margin: '5px',
                                             cursor: 'pointer',
                                         }}
-                                        onClick={() => handleDelete(record.id)}
                                     >
                                         Delete
                                     </button>
@@ -331,7 +325,61 @@ const ManageAttendance = () => {
                     </tbody>
                 </table>
             ) : (
-                <div>No attendance records available.</div>
+                <div>No attendance records found.</div>
+            )}
+
+            {/* Confirmation Modal */}
+            {isModalOpen && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '0',
+                        left: '0',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            textAlign: 'center',
+                            maxWidth: '300px',
+                            width: '100%',
+                        }}
+                    >
+                        <h3>Are you sure you want to delete this record?</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <button
+                                onClick={confirmDelete}
+                                style={{
+                                    backgroundColor: '#4CAF50',
+                                    color: 'white',
+                                    padding: '10px 20px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Yes
+                            </button>
+                            <button
+                                onClick={cancelDelete}
+                                style={{
+                                    backgroundColor: '#f44336',
+                                    color: 'white',
+                                    padding: '10px 20px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                No
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
