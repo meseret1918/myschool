@@ -89,7 +89,7 @@ const ManageMarks = () => {
             setSuccessMessage('Record updated successfully!');
             setTimeout(() => {
                 setSuccessMessage('');
-                navigate('/ManageMarks');
+                navigate('/teacher/manage-marks');
             }, 3000); // Redirect after 3 seconds
             setEditingRecord(null);
         } catch (err) {
