@@ -10,7 +10,7 @@ const Register = () => {
   const [successMessage, setSuccessMessage] = useState(''); // State for success message
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     // Simple form validation
@@ -29,17 +29,29 @@ const Register = () => {
       return;
     }
 
-    // Dummy registration for illustration
-    const user = { email, password, role }; // Store email instead of username
-    localStorage.setItem('user', JSON.stringify(user));
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, role }),
+      });
 
-    // Set the success message
-    setSuccessMessage('Registration successful! You can now login.');
+      const data = await response.json();
 
-    // Redirect to login after 3 seconds (for showing the success message)
-    setTimeout(() => {
-      navigate('/login');
-    }, 3000);
+      if (response.ok) {
+        setSuccessMessage(data.message);
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+      console.error('Error:', err);
+    }
   };
 
   const styles = {
@@ -128,7 +140,7 @@ const Register = () => {
     <div style={styles.container}>
       <h2 style={styles.header}>Register</h2>
       {error && <p style={styles.error}>{error}</p>}
-      {successMessage && <p style={styles.success}>{successMessage}</p>} {/* Display success message */}
+      {successMessage && <p style={styles.success}>{successMessage}</p>}
 
       <form onSubmit={handleRegister}>
         <div style={styles.inputGroup}>

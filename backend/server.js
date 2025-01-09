@@ -35,6 +35,7 @@ const parentRoutes = require('./routes/parentRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const studentAttendanceRoutes = require('./routes/studentAttendanceRoutes');
 const marksRoutes = require('./routes/marksRoutes');
+const classRoutes = require('./routes/classRoutes');
 
 // Define API routes
 app.use('/api/auth', authRoutes);
@@ -46,6 +47,7 @@ app.use('/api/parents', parentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/attendance', studentAttendanceRoutes);
 app.use('/api/marks', marksRoutes);
+app.use('/api/classes', classRoutes);
 
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {

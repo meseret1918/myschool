@@ -1,51 +1,70 @@
-const Class = require('../models/Class');
+const Classes = require('../models/classes');
 
-// Get all classes
-exports.getClasses = async (req, res) => {
-    try {
-        const classes = await Class.findAll();
-        res.status(200).json(classes);
-    } catch (err) {
-        res.status(500).json({ message: "Failed to fetch classes", error: err });
-    }
+// Fetch all class records
+exports.getAllClasses = async (req, res) => {
+  try {
+    const results = await Classes.findAll();
+    res.status(200).json(results);
+  } catch (err) {
+    console.error('Failed to fetch class records:', err);
+    res.status(500).json({ error: 'Failed to fetch class records.' });
+  }
 };
 
-// Create a new class
+// Fetch class record by ID
+exports.getClassById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const record = await Classes.findByPk(id);
+    if (!record) {
+      return res.status(404).json({ error: 'Class record not found.' });
+    }
+    res.status(200).json(record);
+  } catch (err) {
+    console.error('Failed to fetch class record:', err);
+    res.status(500).json({ error: 'Failed to fetch class record.' });
+  }
+};
+
+// Create a new class record
 exports.createClass = async (req, res) => {
-    const { name, subject } = req.body;
-    try {
-        const newClass = await Class.create({ name, subject });
-        res.status(201).json(newClass);
-    } catch (err) {
-        res.status(400).json({ message: "Failed to create class", error: err });
-    }
+  try {
+    const data = req.body;
+    const newRecord = await Classes.create(data);
+    res.status(201).json({ message: 'Class record created successfully.', id: newRecord.id });
+  } catch (err) {
+    console.error('Failed to create class record:', err);
+    res.status(500).json({ error: 'Failed to create class record.' });
+  }
 };
 
-// Edit an existing class
+// Update a class record by ID
 exports.updateClass = async (req, res) => {
-    const { id } = req.params;
-    const { name, subject } = req.body;
-    try {
-        const updatedClass = await Class.update({ name, subject }, { where: { id } });
-        if (updatedClass[0] === 0) {
-            return res.status(404).json({ message: "Class not found" });
-        }
-        res.status(200).json({ id, name, subject });
-    } catch (err) {
-        res.status(400).json({ message: "Failed to update class", error: err });
+  try {
+    const id = req.params.id;
+    const data = req.body;
+    const [updated] = await Classes.update(data, { where: { id } });
+    if (!updated) {
+      return res.status(404).json({ error: 'Class record not found.' });
     }
+    res.status(200).json({ message: 'Class record updated successfully.' });
+  } catch (err) {
+    console.error('Failed to update class record:', err);
+    res.status(500).json({ error: 'Failed to update class record.' });
+  }
 };
 
-// Delete a class
+// Delete a class record by ID
 exports.deleteClass = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const deletedClass = await Class.destroy({ where: { id } });
-        if (deletedClass === 0) {
-            return res.status(404).json({ message: "Class not found" });
-        }
-        res.status(200).json({ message: "Class deleted successfully" });
-    } catch (err) {
-        res.status(500).json({ message: "Failed to delete class", error: err });
+  try {
+    const id = req.params.id;
+    const deleted = await Classes.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ error: 'Class record not found.' });
     }
+    res.status(200).json({ message: 'Class record deleted successfully.' });
+  } catch (err) {
+    console.error('Failed to delete class record:', err);
+    res.status(500).json({ error: 'Failed to delete class record.' });
+  }
 };

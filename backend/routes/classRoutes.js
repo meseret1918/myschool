@@ -1,17 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const classController = require('../controllers/classController');
+const classesController = require('../controllers/classController');
 
-// Get all classes
-router.get('/classes', classController.getClasses);
-
-// Create a new class
-router.post('/classes', classController.createClass);
-
-// Update an existing class
-router.put('/classes/:id', classController.updateClass);
-
-// Delete a class
-router.delete('/classes/:id', classController.deleteClass);
+// Define routes
+router.get('/', classesController.getAllClasses);
+router.get('/:id', classesController.getClassById);
+router.post('/', classesController.createClass);
+router.put('/:id', classesController.updateClass);
+router.delete('/:id', classesController.deleteClass);
 
 module.exports = router;
