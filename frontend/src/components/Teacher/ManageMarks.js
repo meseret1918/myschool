@@ -142,7 +142,8 @@ const ManageMarks = () => {
                 </div>
             )}
 
-            {editingRecord && (
+            {/* Conditionally render the edit form */}
+            {editingRecord ? (
                 <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc' }}>
                     <h3>Edit Marks Record</h3>
                     <form>
@@ -243,40 +244,43 @@ const ManageMarks = () => {
                         </div>
                     </form>
                 </div>
-            )}
-
-            {marks.length > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Student ID</th>
-                            <th>Subject</th>
-                            <th>Marks</th>
-                            <th>Exam Type</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {marks.map((record) => (
-                            <tr key={record.id}>
-                                <td>{record.id}</td>
-                                <td>{record.student_id}</td>
-                                <td>{record.subject}</td>
-                                <td>{record.marks}</td>
-                                <td>{record.exam_type}</td>
-                                <td>{new Date(record.date).toLocaleDateString()}</td>
-                                <td>
-                                    <button onClick={() => handleEdit(record.id)}>Edit</button>
-                                    <button onClick={() => handleDelete(record.id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
             ) : (
-                <div>No marks records available.</div>
+                // Render table if no record is being edited
+                <div>
+                    {marks.length > 0 ? (
+                        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Student ID</th>
+                                    <th>Subject</th>
+                                    <th>Marks</th>
+                                    <th>Exam Type</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {marks.map((record) => (
+                                    <tr key={record.id}>
+                                        <td>{record.id}</td>
+                                        <td>{record.student_id}</td>
+                                        <td>{record.subject}</td>
+                                        <td>{record.marks}</td>
+                                        <td>{record.exam_type}</td>
+                                        <td>{new Date(record.date).toLocaleDateString()}</td>
+                                        <td>
+                                            <button onClick={() => handleEdit(record.id)}>Edit</button>
+                                            <button onClick={() => handleDelete(record.id)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div>No marks records available.</div>
+                    )}
+                </div>
             )}
         </div>
     );
