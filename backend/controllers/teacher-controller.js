@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const Teacher = require('../models/teacherSchema.js');
-const Subject = require('../models/subjectSchema.js');
+const Teacher = require('../models/teacher');
+const Subject = require('../models/subject');
 
 const teacherRegister = async (req, res) => {
     const { name, email, password, role, school, teachSubject, teachSclass } = req.body;

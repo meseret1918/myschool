@@ -1,40 +1,20 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const Teacher = sequelize.define('Teacher', {
-  name: {
+const Subject = sequelize.define('Subject', {
+  subName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password: {
+  subCode: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  role: {
+  sessions: {
     type: DataTypes.STRING,
-    defaultValue: 'Teacher',
-  },
-  schoolId: {
-    type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: 'admins',
-      key: 'id',
-    },
   },
-  teachSubjectId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'subjects',
-      key: 'id',
-    },
-  },
-  teachSclassId: {
+  sclassId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -42,13 +22,23 @@ const Teacher = sequelize.define('Teacher', {
       key: 'id',
     },
   },
-  attendance: {
-    type: DataTypes.JSON,
-    allowNull: true,
+  schoolId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'admins',
+      key: 'id',
+    },
+  },
+  teacherId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'teachers',
+      key: 'id',
+    },
   },
 }, {
-  tableName: 'teachers',
+  tableName: 'subjects',
   timestamps: true,
 });
 
-module.exports = Teacher;
+module.exports = Subject;

@@ -1,49 +1,51 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Your Sequelize configuration
+const sequelize = require('../config/db'); // Import the configured Sequelize instance
 
+// Define the Student model
 const Student = sequelize.define('Student', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  rollNum: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  sclassId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'sclasses', // Reference to the sclasses table
+      key: 'id',
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+  },
+  schoolId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'admins', // Reference to the admins table
+      key: 'id',
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    class_name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    parent_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-    phone: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    date_of_birth: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    address: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // Automatically sets the current timestamp
-        allowNull: false
-    }
+  },
+  role: {
+    type: DataTypes.STRING,
+    defaultValue: 'Student',
+  },
+  examResult: {
+    type: DataTypes.JSON, // Stores exam results as a JSON object
+    allowNull: true,
+  },
+  attendance: {
+    type: DataTypes.JSON, // Stores attendance records as a JSON object
+    allowNull: true,
+  },
 }, {
-    tableName: 'students',
-    timestamps: false // If you manually manage timestamps
+  tableName: 'students', // Explicitly specify the table name
+  timestamps: true, // Automatically adds createdAt and updatedAt fields
 });
 
 module.exports = Student;

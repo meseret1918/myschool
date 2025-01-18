@@ -1,7 +1,7 @@
-const Sclass = require('../models/sclassSchema.js');
-const Student = require('../models/studentSchema.js');
-const Subject = require('../models/subjectSchema.js');
-const Teacher = require('../models/teacherSchema.js');
+const Sclass = require('../models/sclass');
+const Student = require('../models/student');
+const Subject = require('../models/subject');
+const Teacher = require('../models/teacher');
 
 const sclassCreate = async (req, res) => {
     try {

@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./Navbar";
+//import Navbar from "./Navbar"; <Navbar isAuthenticated={isAuthenticated} role={role} />
 import { useLocation } from "react-router-dom";
 
 const Header = ({ isAuthenticated, role }) => {
@@ -8,11 +8,13 @@ const Header = ({ isAuthenticated, role }) => {
   const getHeaderValue = () => {
     switch (location.pathname) {
       case "/":
-        return "Welcome to School App";
+        return "SCHOOL APP";
       case "/login":
         return "Login Page";
-      case "/register":
+      case "/AdminRegisterPage":
         return "Register Here";
+        case "/ForgotPassword":
+          return "Reset ForgotPassword";
       case `/${role}/Admin`:
         return "Welcome to AdminDashboard";
       case `/${role}/Teacher`:
@@ -27,7 +29,7 @@ const Header = ({ isAuthenticated, role }) => {
 
   return (
     <header>
-      <Navbar isAuthenticated={isAuthenticated} role={role} />
+      
       <div style={{ backgroundColor: "#f8f9fa", padding: "0.05px 10px" }}>
         <h1>{getHeaderValue()}</h1>
       </div>
