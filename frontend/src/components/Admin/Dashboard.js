@@ -6,16 +6,16 @@ import './styles/AdminDashboard.css';
 const fetchDashboardData = async (setCounts, setLoading, setError) => {
   try {
     setLoading(true); // Trigger loading state
-    const response = await fetch('http://localhost:5000/api/dashboard-stats');
+    const response = await fetch('http://localhost:5000/api/dashboard');
     
     if (!response.ok) {
       throw new Error('Failed to fetch dashboard data');
     }
 
-    const data = await response.json(); // Parse response
-    setCounts(data); // Set state with the fetched data
+    const { totalTeachers, totalStudents, totalParents } = await response.json(); // Destructure the response
+    setCounts({ totalTeachers, totalStudents, totalParents }); // Set state with the fetched data
   } catch (err) {
-    setError(err.message); // Handle error
+    setError(err.message || 'An error occurred while fetching data'); // Handle error
   } finally {
     setLoading(false); // Complete loading
   }

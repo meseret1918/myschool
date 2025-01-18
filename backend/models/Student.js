@@ -1,51 +1,61 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Import the configured Sequelize instance
+const sequelize = require('../config/db');
 
-// Define the Student model
 const Student = sequelize.define('Student', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  rollNum: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  sclassId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'sclasses', // Reference to the sclasses table
-      key: 'id',
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
     },
-  },
-  schoolId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'admins', // Reference to the admins table
-      key: 'id',
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-  },
-  role: {
-    type: DataTypes.STRING,
-    defaultValue: 'Student',
-  },
-  examResult: {
-    type: DataTypes.JSON, // Stores exam results as a JSON object
-    allowNull: true,
-  },
-  attendance: {
-    type: DataTypes.JSON, // Stores attendance records as a JSON object
-    allowNull: true,
-  },
+    rollNum: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    sclassId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    schoolId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'Student',
+    },
+    examResult: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    attendance: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
 }, {
-  tableName: 'students', // Explicitly specify the table name
-  timestamps: true, // Automatically adds createdAt and updatedAt fields
+    tableName: 'students',
+    timestamps: false, // If manually managing timestamps
 });
 
 module.exports = Student;

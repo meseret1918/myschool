@@ -1,13 +1,11 @@
-// routes/dashboardRoutes.js
 const express = require('express');
+const router = express.Router();
 const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
 const Parent = require('../models/Parent');
 
-const router = express.Router();
-
-// Get Dashboard Stats (Teacher, Student, Parent count)
-router.get('/dashboard-stats', async (req, res) => {
+// Dashboard route to get statistics
+router.get('/', async (req, res) => {
   try {
     const totalTeachers = await Teacher.count();
     const totalStudents = await Student.count();
@@ -18,8 +16,8 @@ router.get('/dashboard-stats', async (req, res) => {
       totalStudents,
       totalParents
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Unable to fetch dashboard stats' });
   }
 });
