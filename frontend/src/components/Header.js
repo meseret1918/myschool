@@ -30,7 +30,7 @@ const Header = ({ isAuthenticated, role }) => {
   return (
     <header>
       
-      <div style={{ backgroundColor: "#f8f9fa", padding: "0.05px 10px" }}>
+      <div style={{ backgroundColor: "blue", padding: "0.5px 10px" }}>
         <h1>{getHeaderValue()}</h1>
       </div>
     </header>

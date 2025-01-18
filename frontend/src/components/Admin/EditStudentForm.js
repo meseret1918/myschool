@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Box } from '@mui/material';
+import styled from 'styled-components';
 
 const EditStudentForm = () => {
   const { id } = useParams();
@@ -91,6 +93,23 @@ const EditStudentForm = () => {
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '16px',
+  };
+
+  const cancelButtonStyle = {
+    backgroundColor: '#f44336', // Red color for cancel button
+    padding: '10px 20px',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  };
+
+  const buttonContainerStyle = {
+    display: 'flex',
+    justifyContent: 'space-between', // Space between buttons
+    gap: '10px', // Optional gap between buttons
+    marginTop: '20px',
   };
 
   if (loading) {
@@ -192,7 +211,16 @@ const EditStudentForm = () => {
           />
         </div>
 
-        <button type="submit" style={buttonStyle}>Update Student</button>
+        <div style={buttonContainerStyle}>
+          <button type="submit" style={buttonStyle}>Update Student</button>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/manage-students')}
+            style={cancelButtonStyle}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

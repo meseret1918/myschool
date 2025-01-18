@@ -13,15 +13,6 @@ const AddStudentForm = () => {
   });
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [placeholders, setPlaceholders] = useState({
-    name: 'Name',
-    email: 'Email',
-    class_name: 'Class',
-    parent_id: 'Parent ID',
-    phone: 'Phone',
-    date_of_birth: 'Date of Birth',
-    address: 'Address',
-  });
   const [formErrors, setFormErrors] = useState({
     name: '',
     email: '',
@@ -34,7 +25,7 @@ const AddStudentForm = () => {
 
   const navigate = useNavigate();
 
-  // Check for required fields
+  // Check for required fields and apply the new validation rules
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
@@ -60,12 +51,24 @@ const AddStudentForm = () => {
       valid = false;
     }
 
-    // Check phone number validity (only digits, 10-14 characters)
+    // Check parent ID (minimum length 1)
+    if (!newStudent.parent_id) {
+      newErrors.parent_id = 'Parent ID is required';
+      valid = false;
+    } else if (newStudent.parent_id.length < 1) {
+      newErrors.parent_id = 'Parent ID must be at least 1 character';
+      valid = false;
+    }
+
+    // Check phone number validity (minimum 10 digits)
     if (!newStudent.phone) {
       newErrors.phone = 'Phone number is required';
       valid = false;
+    } else if (newStudent.phone.length < 10) {
+      newErrors.phone = 'Phone number must be at least 10 digits';
+      valid = false;
     } else if (!/^\d{10,14}$/.test(newStudent.phone)) {
-      newErrors.phone = 'Phone number must be between 10 and 14 digits';
+      newErrors.phone = 'Phone number must be between 10 and 14 digits and contain only numbers';
       valid = false;
     }
 
@@ -90,9 +93,7 @@ const AddStudentForm = () => {
 
       if (!response.ok) {
         const errorDetails = await response.json(); // Parse error details
-        Object.keys(errorDetails).forEach((key) => {
-          setPlaceholders((prev) => ({ ...prev, [key]: errorDetails[key] }));
-        });
+        setError('Validation errors occurred.');
         throw new Error('Validation errors occurred.');
       }
 
@@ -107,15 +108,6 @@ const AddStudentForm = () => {
         date_of_birth: '',
         address: '',
       }); // Reset form fields after successful addition
-      setPlaceholders({
-        name: 'Name',
-        email: 'Email',
-        class_name: 'Class',
-        parent_id: 'Parent ID',
-        phone: 'Phone',
-        date_of_birth: 'Date of Birth',
-        address: 'Address',
-      });
       setFormErrors({
         name: '',
         email: '',
@@ -144,7 +136,7 @@ const AddStudentForm = () => {
 
       <input
         type="text"
-        placeholder={placeholders.name}
+        placeholder="Name"
         value={newStudent.name}
         onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -153,7 +145,7 @@ const AddStudentForm = () => {
 
       <input
         type="email"
-        placeholder={placeholders.email}
+        placeholder="Email"
         value={newStudent.email}
         onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -162,7 +154,7 @@ const AddStudentForm = () => {
 
       <input
         type="text"
-        placeholder={placeholders.class_name}
+        placeholder="Class"
         value={newStudent.class_name}
         onChange={(e) => setNewStudent({ ...newStudent, class_name: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -171,15 +163,16 @@ const AddStudentForm = () => {
 
       <input
         type="text"
-        placeholder={placeholders.parent_id}
+        placeholder="Parent ID"
         value={newStudent.parent_id}
         onChange={(e) => setNewStudent({ ...newStudent, parent_id: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
       />
+      {renderError('parent_id')}
 
       <input
         type="text"
-        placeholder={placeholders.phone}
+        placeholder="Phone"
         value={newStudent.phone}
         onChange={(e) => setNewStudent({ ...newStudent, phone: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -188,7 +181,7 @@ const AddStudentForm = () => {
 
       <input
         type="date"
-        placeholder={placeholders.date_of_birth}
+        placeholder="Date of Birth"
         value={newStudent.date_of_birth}
         onChange={(e) => setNewStudent({ ...newStudent, date_of_birth: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -196,28 +189,48 @@ const AddStudentForm = () => {
 
       <input
         type="text"
-        placeholder={placeholders.address}
+        placeholder="Address"
         value={newStudent.address}
         onChange={(e) => setNewStudent({ ...newStudent, address: e.target.value })}
         style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
       />
 
-      <button
-        onClick={handleAddStudent}
-        style={{
-          width: '100%',
-          padding: '12px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '16px',
-          fontWeight: 'bold',
-        }}
-      >
-        Add Student
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button
+          onClick={handleAddStudent}
+          style={{
+            width: '48%',
+            padding: '12px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold',
+          }}
+        >
+          Add Student
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigate('/admin/manage-students')}
+          style={{
+            width: '48%',
+            padding: '12px',
+            backgroundColor: '#f44336',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold',
+          }}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

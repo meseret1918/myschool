@@ -35,7 +35,7 @@ const Homepage = () => {
                             </StyledLink>
                             <StyledText>
                                 Don't have an account?{' '}
-                                <Link to="/AdminRegisterPage" style={{ color: "#550080" }}>
+                                <Link to="/Register" style={{ color: "#550080" }}>
                                     Sign up
                                 </Link>
                             </StyledText>
