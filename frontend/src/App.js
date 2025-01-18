@@ -7,7 +7,7 @@ import Header from './components/Header';
 import Homepage from './components/Auth/Homepage';
 import ChooseUser from './components/Auth/ChooseUser';
 // Auth Components
-import LoginPage from './components/Auth/LoginPage';
+import Login from './components/Auth/Login';
 import AdminRegisterPage from './components/Auth/AdminRegisterPage';
 
 import ForgotPassword from './components/Auth/ForgotPassword';
@@ -79,7 +79,7 @@ const App = () => {
           {/* Public Routes */}
           <Route path="/" element={<Homepage />} />
           <Route path="/choose" element={<ChooseUser visitor="normal" />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/AdminRegisterPage" element={<AdminRegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 

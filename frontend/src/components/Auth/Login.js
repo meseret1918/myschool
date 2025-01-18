@@ -5,9 +5,9 @@ import { Grid, Box, Typography, Paper, TextField, IconButton, InputAdornment } f
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import bgpic from '../../assets/admin.jpg';
-import { LightPurpleButton } from '../../components/buttonStyles';
+import { LightPurpleButton } from '../buttonStyles';
 import styled from 'styled-components';
-import Popup from '../../components/Popup';
+import Popup from '../Popup';
 import axios from 'axios'; // Import axios for making API requests
 
 const defaultTheme = createTheme();
@@ -21,13 +21,17 @@ const StyledLink = styled(Link)`
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); // To handle error messages
   const [showPassword, setShowPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // Success message state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Reset error and success messages
+    setError('');
+    setSuccessMessage('');
 
     // Check for empty fields
     if (!email || !password) {
@@ -43,8 +47,10 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        // If login is successful, save the user to localStorage (or handle JWT)
+        // If login is successful, save the user data and token to localStorage
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('token', response.data.token); // Save the token
+
         setSuccessMessage('Login successful!');
         
         // Redirect to the corresponding role's dashboard
@@ -52,7 +58,11 @@ const Login = () => {
       }
     } catch (error) {
       // Handle errors, such as invalid credentials or server errors
-      setError('Invalid email or password!');
+      if (error.response && error.response.data) {
+        setError(error.response.data.message || 'Invalid email or password!');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 
