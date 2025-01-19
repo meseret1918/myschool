@@ -90,7 +90,7 @@ const Register = () => {
     header: {
       textAlign: 'center',
       marginBottom: '20px',
-      color: '#333',
+      color: '#fff',
       fontSize: '20px',
       fontWeight: 'bold',
     },
@@ -134,7 +134,7 @@ const Register = () => {
     button: {
       width: '100%',
       padding: '10px',
-      backgroundColor: '#007bff',
+      backgroundColor: '#0cc',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',

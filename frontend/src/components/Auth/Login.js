@@ -7,7 +7,6 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import bgpic from '../../assets/admin.jpg';
 import { LightPurpleButton } from '../buttonStyles';
 import styled from 'styled-components';
-import Popup from '../Popup';
 import axios from 'axios'; // Import axios for making API requests
 
 const defaultTheme = createTheme();
@@ -23,15 +22,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // To handle error messages
   const [showPassword, setShowPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(''); // Success message state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Reset error and success messages
+    // Reset error message
     setError('');
-    setSuccessMessage('');
 
     // Check for empty fields
     if (!email || !password) {
@@ -51,8 +48,6 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('token', response.data.token); // Save the token
 
-        setSuccessMessage('Login successful!');
-        
         // Redirect to the corresponding role's dashboard
         navigate(`/${response.data.user.role}/dashboard`);
       }
@@ -89,12 +84,6 @@ const Login = () => {
     },
     error: {
       color: '#ff4d4d',
-      textAlign: 'center',
-      marginBottom: '10px',
-      fontSize: '14px',
-    },
-    success: {
-      color: '#28a745',
       textAlign: 'center',
       marginBottom: '10px',
       fontSize: '14px',
@@ -171,7 +160,6 @@ const Login = () => {
               Login
             </Typography>
             {error && <p style={styles.error}>{error}</p>}
-            {successMessage && <p style={styles.success}>{successMessage}</p>}
 
             <Box component="form" noValidate onSubmit={handleLogin}>
               <div style={styles.inputGroup}>
@@ -223,8 +211,6 @@ const Login = () => {
           </Box>
         </Grid>
       </Grid>
-
-      <Popup message={successMessage} setShowPopup={setSuccessMessage} showPopup={successMessage} />
     </ThemeProvider>
   );
 };

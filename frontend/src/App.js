@@ -2,15 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Components
-
 import Header from './components/Header';
 import Homepage from './components/Auth/Homepage';
-import About from './components/About';
-import Services from './components/Services';
-import Contact from './components/Contact';
 
 // Auth Components
 import Login from './components/Auth/Login';
+import Logout from './components/Auth/Logout';
 import Register from './components/Auth/AdminRegisterPage';
 import ForgotPassword from './components/Auth/ForgotPassword';
 
@@ -36,12 +33,14 @@ import EditParentForm from './components/Admin/EditParentForm';
 
 // Teacher Management Components
 import ManageMarks from './components/Teacher/ManageMarks';
+import ViewStudents from './components/Teacher/ViewStudents';
 import SendMessageTeacher from './components/Teacher/SendMessage';
 import ManageAttendance from './components/Teacher/ManageAttendance';
 import ManageClasses from './components/Teacher/ManageClasses';
 import ManageExams from './components/Teacher/ManageExams';
 import EditAttendance from './components/Teacher/EditAttendance';
-
+import AddMark from './components/Teacher/AddMark';  // Import AddMark
+import EditMark from './components/Teacher/EditMark';  // Import EditMark
 
 // Parent Management Components
 import SendMessageParent from './components/Parent/SendMessage'; // Ensure this is defined
@@ -79,10 +78,8 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Homepage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -106,17 +103,20 @@ const App = () => {
 
           {/* Routes for Editing and Deleting Students */}
           <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />
-          <Route path="/teacher/edit/:id" component={renderProtectedRoute("teacher",EditAttendance)} />
+          <Route path="/teacher/edit/:id" element={renderProtectedRoute("teacher", EditAttendance)} />
 
           {/* Protected Routes for Teacher */}
           <Route path="/teacher/dashboard" element={renderProtectedRoute("teacher", TeacherDashboard)} />
-          <Route path="/teacher/manage-students" element={renderProtectedRoute("teacher", ManageStudents)} />
+          <Route path="/teacher/ViewStudents" element={renderProtectedRoute("teacher", ViewStudents)} />
           <Route path="/teacher/manage-marks" element={renderProtectedRoute("teacher", ManageMarks)} />
           <Route path="/teacher/send-message" element={renderProtectedRoute("teacher", SendMessageTeacher)} />
           <Route path="/teacher/manage-attendance" element={renderProtectedRoute("teacher", ManageAttendance)} />
           <Route path="/teacher/manage-classes" element={renderProtectedRoute("teacher", ManageClasses)} />
           <Route path="/teacher/manage-exams" element={renderProtectedRoute("teacher", ManageExams)} />
-         
+          
+          {/* Routes for Adding and Editing Marks */}
+          <Route path="/teacher/add-mark" element={renderProtectedRoute("teacher", AddMark)} />  {/* AddMark route */}
+          <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} />  {/* EditMark route */}
 
           {/* Protected Routes for Parent */}
           <Route path="/parent/dashboard" element={renderProtectedRoute("parent", ParentDashboard)} />
@@ -133,7 +133,6 @@ const App = () => {
           <Route path="*" element={<div style={{ textAlign: 'center', marginTop: '50px' }}><h1>404</h1><p>Page Not Found</p></div>} />
         </Routes>
       </main>
-     
     </Router>
   );
 };

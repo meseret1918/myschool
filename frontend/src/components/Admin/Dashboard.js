@@ -88,6 +88,19 @@ const AdminDashboard = () => {
         }}
       >
         <Typography variant="h4">Admin Dashboard</Typography>
+        <Link
+          to="/login"
+          style={{
+            textDecoration: 'none',
+            backgroundColor: '#f44336',
+            color: '#fff',
+            padding: '10px 15px',
+            borderRadius: '5px',
+            fontSize: '16px',
+          }}
+        >
+          Logout
+        </Link>
       </Box>
 
       {/* Stats Section */}
