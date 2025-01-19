@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Box } from '@mui/material';
+import styled from 'styled-components';
 
 const EditTeacher = () => {
   const { id } = useParams(); // Extract the teacher ID from the URL
@@ -110,6 +112,13 @@ const EditTeacher = () => {
     marginBottom: '20px',
   };
 
+  const buttonContainerStyle = {
+    display: 'flex',
+    justifyContent: 'space-between', // Space between buttons
+    gap: '10px', // Optional gap between buttons
+    marginTop: '20px',
+  };
+
   return (
     <div style={formStyle}>
       <h2>Edit Teacher</h2>
@@ -138,7 +147,16 @@ const EditTeacher = () => {
             />
           </div>
         ))}
-        <button type="submit" style={buttonStyle}>Update Teacher</button>
+        <div style={buttonContainerStyle}>
+          <button type="submit" style={buttonStyle}>Update Teacher</button>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/manage-teachers')}
+            style={{ ...buttonStyle, backgroundColor: '#f44336' }} // Red for Cancel button
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

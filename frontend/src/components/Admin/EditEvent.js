@@ -1,99 +1,168 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Use useParams to get eventId from URL
-import './styles/EditEvent.css'; // Import the CSS file
+import { useNavigate, useParams } from 'react-router-dom';
+import { Box, TextField, Button } from '@mui/material';
+import styled from 'styled-components';
+
+const FormContainer = styled(Box)`
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 30px;
+`;
+
+const CancelButton = styled(Button)`
+  background-color: #f44336;
+`;
 
 const EditEvent = () => {
-  const { eventId } = useParams(); // Get the eventId from the URL
-  const navigate = useNavigate(); // Use navigate instead of useHistory
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+
   const [event, setEvent] = useState({
     title: '',
     description: '',
     date: '',
   });
-  const [flashMessage, setFlashMessage] = useState('');
-  const [flashMessageType, setFlashMessageType] = useState(''); // success or error
+  const [error, setError] = useState(null);
+  const [flashMessage, setFlashMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Fetch event data for editing using the eventId from URL
-    fetch(`http://localhost:5000/events/${eventId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          throw new Error(data.error);
+    const fetchEventDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
+        if (!response.ok) {
+          throw new Error('Error fetching event details');
         }
-        setEvent({
-          title: data.title || '',
-          description: data.description || '',
-          date: data.date || '',
-        }); // Set event data if available
-      })
-      .catch((error) => {
-        setFlashMessage('Failed to load event data. Please try again later.');
-        setFlashMessageType('error');
-      });
+        const data = await response.json();
+        setEvent(data); // Assuming data contains event properties like title, description, and date
+      } catch (error) {
+        setError(error.message || 'Failed to load event details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
   }, [eventId]);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEvent((prevEvent) => ({
+      ...prevEvent,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-    // Update the event with the provided data using the eventId in the URL
-    fetch(`http://localhost:5000/events/${eventId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: event.title,
-        description: event.description,
-        date: event.date,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        setFlashMessage('Event updated successfully!');
-        setFlashMessageType('success');
-
-        // Redirect to manage events page after a short delay
-        setTimeout(() => {
-          navigate('/manage-events');
-        }, 2000); // Delay for 2 seconds
-      })
-      .catch((error) => {
-        setFlashMessage('Failed to update event. Please try again.');
-        setFlashMessageType('error');
+    try {
+      const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
       });
+
+      if (response.ok) {
+        setFlashMessage({ type: 'success', message: 'Event updated successfully!' });
+        navigate('/admin/manage-events'); // Redirect to events management page after update
+      } else {
+        setFlashMessage({ type: 'error', message: 'Error updating event' });
+      }
+    } catch (error) {
+      setFlashMessage({ type: 'error', message: `Error: ${error.message}` });
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setFlashMessage(null), 3000);
+    }
   };
 
   return (
-    <div className="edit-event-container">
-      <h2>Edit Event</h2>
+    <div>
+      <Box my={2} textAlign="center">
+        <h2>Edit Event</h2>
+      </Box>
+
       {flashMessage && (
-        <div className={`flash-message ${flashMessageType}`}>
-          {flashMessage}
-        </div>
+        <Box my={2} textAlign="center">
+          <Box
+            sx={{
+              padding: '10px',
+              borderRadius: '5px',
+              backgroundColor: flashMessage.type === 'error' ? '#f8d7da' : '#d4edda',
+              color: flashMessage.type === 'error' ? '#721c24' : '#155724',
+              border: `1px solid ${flashMessage.type === 'error' ? '#f5c6cb' : '#c3e6cb'}`,
+            }}
+          >
+            {flashMessage.message}
+          </Box>
+        </Box>
       )}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Event Title"
-          value={event.title}
-          onChange={(e) => setEvent({ ...event, title: e.target.value })}
-        />
-        <textarea
-          placeholder="Event Description"
-          value={event.description}
-          onChange={(e) => setEvent({ ...event, description: e.target.value })}
-        />
-        <input
-          type="date"
-          value={event.date}
-          onChange={(e) => setEvent({ ...event, date: e.target.value })}
-        />
-        <button type="submit">Update Event</button>
-      </form>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <FormContainer>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <TextField
+                label="Title"
+                name="title"
+                value={event.title}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+              />
+            </div>
+            <div>
+              <TextField
+                label="Description"
+                name="description"
+                value={event.description}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+                required
+              />
+            </div>
+            <div>
+              <TextField
+                label="Date"
+                name="date"
+                value={event.date}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                type="date"
+                required
+              />
+            </div>
+
+            <Box my={2} display="flex" justifyContent="space-between" gap="10px">
+              <Button variant="contained" color="primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Updating...' : 'Update Event'}
+              </Button>
+              <CancelButton variant="contained" onClick={() => navigate('/admin/manage-events')}>
+                Cancel
+              </CancelButton>
+            </Box>
+          </form>
+        </FormContainer>
+      )}
     </div>
   );
 };

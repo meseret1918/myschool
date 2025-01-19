@@ -1,8 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/material';
+import styled from 'styled-components';
+
+const FormContainer = styled(Box)`
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 50px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+`;
+
+const Button = styled.button`
+  width: 48%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: white;
+`;
 
 const AddParentForm = () => {
-  const [newParent, setNewParent] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
@@ -10,12 +41,6 @@ const AddParentForm = () => {
   });
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [placeholders, setPlaceholders] = useState({
-    name: 'Name',
-    phone: 'Phone',
-    email: 'Email',
-    address: 'Address',
-  });
   const [formErrors, setFormErrors] = useState({
     name: '',
     phone: '',
@@ -25,31 +50,26 @@ const AddParentForm = () => {
 
   const navigate = useNavigate();
 
-  // Check for required fields
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
 
-    // Check name
-    if (!newParent.name) {
-      newErrors.name = 'Name is required';
-      valid = false;
-    }
+    // Check required fields
+    Object.keys(formData).forEach((field) => {
+      if (!formData[field]) {
+        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
+        valid = false;
+      }
+    });
 
-    // Check email format
-    if (!newParent.email) {
-      newErrors.email = 'Email is required';
-      valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(newParent.email)) {
+    // Validate email format
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
       valid = false;
     }
 
-    // Check phone number validity (only digits, 10-14 characters)
-    if (!newParent.phone) {
-      newErrors.phone = 'Phone number is required';
-      valid = false;
-    } else if (!/^\d{10,14}$/.test(newParent.phone)) {
+    // Validate phone number format (10-14 digits)
+    if (formData.phone && !/^\d{10,14}$/.test(formData.phone)) {
       newErrors.phone = 'Phone number must be between 10 and 14 digits';
       valid = false;
     }
@@ -58,8 +78,7 @@ const AddParentForm = () => {
     return valid;
   };
 
-  // Handle adding a parent
-  const handleAddParent = async () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
@@ -67,33 +86,23 @@ const AddParentForm = () => {
     try {
       const response = await fetch('http://localhost:5000/api/parents', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newParent),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        const errorDetails = await response.json(); // Parse error details
-        Object.keys(errorDetails).forEach((key) => {
-          setPlaceholders((prev) => ({ ...prev, [key]: errorDetails[key] }));
-        });
-        throw new Error('Validation errors occurred.');
+        const errorDetails = await response.json();
+        setError(errorDetails.message || 'Error adding parent. Please try again later.');
+        return;
       }
 
       const addedParent = await response.json();
       setSuccessMessage(`Parent ${addedParent.name} added successfully!`);
-      setNewParent({
+      setFormData({
         name: '',
         phone: '',
         email: '',
         address: '',
-      }); // Reset form fields after successful addition
-      setPlaceholders({
-        name: 'Name',
-        phone: 'Phone',
-        email: 'Email',
-        address: 'Address',
       });
       setFormErrors({
         name: '',
@@ -101,9 +110,9 @@ const AddParentForm = () => {
         email: '',
         address: '',
       });
-      navigate('/admin/manage-parents');
+      setTimeout(() => navigate('/admin/manage-parents'), 2000);
     } catch (error) {
-      setError(error.message);
+      setError(error.message || 'Error adding parent. Please try again later.');
     }
   };
 
@@ -112,64 +121,46 @@ const AddParentForm = () => {
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: 'auto', padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '8px', backgroundColor: '#f9f9f9', marginBottom: '50px' }}>
+    <FormContainer>
       <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Parent</h3>
 
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
 
-      <input
-        type="text"
-        placeholder={placeholders.name}
-        value={newParent.name}
-        onChange={(e) => setNewParent({ ...newParent, name: e.target.value })}
-        style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
-      />
-      {renderError('name')}
+      {Object.keys(formData).map((field) => (
+        <div key={field}>
+          <Input
+            type={field === 'phone' ? 'text' : field === 'email' ? 'email' : 'text'}
+            name={field}
+            placeholder={field.replace(/([A-Z])/g, ' $1').trim()}
+            value={formData[field]}
+            onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+          />
+          {renderError(field)}
+        </div>
+      ))}
 
-      <input
-        type="email"
-        placeholder={placeholders.email}
-        value={newParent.email}
-        onChange={(e) => setNewParent({ ...newParent, email: e.target.value })}
-        style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
-      />
-      {renderError('email')}
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          onClick={handleSubmit}
+          style={{
+            backgroundColor: '#007bff',
+          }}
+        >
+          Add Parent
+        </Button>
 
-      <input
-        type="text"
-        placeholder={placeholders.phone}
-        value={newParent.phone}
-        onChange={(e) => setNewParent({ ...newParent, phone: e.target.value })}
-        style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
-      />
-      {renderError('phone')}
-
-      <input
-        type="text"
-        placeholder={placeholders.address}
-        value={newParent.address}
-        onChange={(e) => setNewParent({ ...newParent, address: e.target.value })}
-        style={{ width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: '1px solid #ccc' }}
-      />
-
-      <button
-        onClick={handleAddParent}
-        style={{
-          width: '100%',
-          padding: '12px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '16px',
-          fontWeight: 'bold',
-        }}
-      >
-        Add Parent
-      </button>
-    </div>
+        <Button
+          type="button"
+          onClick={() => navigate('/admin/manage-parents')}
+          style={{
+            backgroundColor: '#f44336',
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+    </FormContainer>
   );
 };
 

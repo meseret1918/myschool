@@ -1,17 +1,115 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles/ManageTeachers.css'; // Import the CSS file
+import { Box } from '@mui/material';
+import styled from 'styled-components';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const TableContainer = styled.div`
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  overflow-x: auto;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 8px 12px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+const FlashMessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+`;
+
+const FlashMessage = styled.div`
+  text-align: center;
+  max-width: 600px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${(props) => (props.type === 'error' ? '#f8d7da' : '#d4edda')};
+  color: ${(props) => (props.type === 'error' ? '#721c24' : '#155724')};
+  border: 1px solid ${(props) => (props.type === 'error' ? '#f5c6cb' : '#c3e6cb')};
+`;
+
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: ${(props) => props.color || '#007bff'};
+  font-size: 20px;
+
+  span {
+    transition: color 0.3s;
+  }
+
+  &:hover span {
+    color: ${(props) => props.hoverColor || '#0056b3'};
+  }
+
+  &:disabled {
+    color: #c0c0c0;
+    cursor: not-allowed;
+  }
+`;
+
+const DeleteDialog = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+`;
+
+const GoBackLink = styled.a`
+  font-size: 24px;
+  color: #6c757d;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #5a6268;
+  }
+`;
 
 const ManageTeachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState('');
+  const [flashMessage, setFlashMessage] = useState(null);
   const [teacherToDelete, setTeacherToDelete] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch teachers
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
@@ -22,8 +120,7 @@ const ManageTeachers = () => {
         const data = await response.json();
         setTeachers(data);
       } catch (error) {
-        setError('Failed to load teachers. Please try again.');
-        console.error('Error fetching teachers:', error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -32,45 +129,56 @@ const ManageTeachers = () => {
     fetchTeachers();
   }, []);
 
-  const handleDelete = (id) => {
-    if (isDeleting) return;
-    setTeacherToDelete(id);
-  };
+  const handleDelete = (id) => setTeacherToDelete(id);
 
   const confirmDelete = async () => {
     if (isDeleting || !teacherToDelete) return;
-
     setIsDeleting(true);
-    setDeleteMessage('Deleting...');
+    setFlashMessage({ type: 'info', message: 'Deleting...' });
 
     try {
       const response = await fetch(`http://localhost:5000/api/teachers/${teacherToDelete}`, {
         method: 'DELETE',
       });
-
       if (response.ok) {
-        setDeleteMessage('Teacher deleted successfully!');
-        // Wait until successful response, then update UI
-        setTeachers((prevTeachers) => prevTeachers.filter((teacher) => teacher.TeacherID !== teacherToDelete));
+        setFlashMessage({ type: 'success', message: 'Teacher deleted successfully!' });
+        setTeachers(teachers.filter((teacher) => teacher.TeacherID !== teacherToDelete));
       } else {
-        setDeleteMessage('Error deleting teacher');
+        setFlashMessage({ type: 'error', message: 'Error deleting teacher' });
       }
     } catch (error) {
-      setDeleteMessage('Error: ' + error.message);
+      setFlashMessage({ type: 'error', message: `Error: ${error.message}` });
     } finally {
       setIsDeleting(false);
       setTeacherToDelete(null);
+
+      setTimeout(() => setFlashMessage(null), 3000);
     }
   };
 
-  const cancelDelete = () => {
-    setTeacherToDelete(null);
+  const cancelDelete = () => setTeacherToDelete(null);
+
+  const goBack = () => {
+    navigate('/admin/Dashboard');
   };
 
   return (
-    <div className="manage-teachers-container">
-      <h2>Manage Teachers</h2>
-      <h3>List of Teachers</h3>
+    <div>
+      <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
+        <GoBackLink href="#" onClick={goBack}>
+          🔙
+        </GoBackLink>
+      </Box>
+
+      <Box my={2} textAlign="center">
+        <h2>Manage Teachers</h2>
+      </Box>
+
+      {flashMessage && (
+        <FlashMessageContainer>
+          <FlashMessage type={flashMessage.type}>{flashMessage.message}</FlashMessage>
+        </FlashMessageContainer>
+      )}
 
       {loading ? (
         <p>Loading...</p>
@@ -79,29 +187,11 @@ const ManageTeachers = () => {
       ) : teachers.length === 0 ? (
         <p>No teachers found</p>
       ) : (
-        <>
-          {deleteMessage && <p>{deleteMessage}</p>} {/* Conditionally render delete message */}
-
-          {teacherToDelete && (
-            <div className="confirmation-modal">
-              <div>
-                <p className="message">Are you sure you want to delete this teacher?</p>
-                <div className="buttons">
-                  <button className="yes-button" onClick={confirmDelete} disabled={isDeleting}>
-                    Yes
-                  </button>
-                  <button className="no-button" onClick={cancelDelete} disabled={isDeleting}>
-                    No
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <table>
+        <TableContainer>
+          <StyledTable>
             <thead>
               <tr>
-                <th>#</th>
+                <th>No</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Gender</th>
@@ -109,9 +199,9 @@ const ManageTeachers = () => {
                 <th>Contact Number</th>
                 <th>Email</th>
                 <th>Qualification</th>
-                <th>Experience (Years)</th>
+                <th>Experience</th>
                 <th>Hire Date</th>
-                <th>Subjects Taught</th>
+                <th>Subjects</th>
                 <th>Salary</th>
                 <th>Add</th>
                 <th>Edit</th>
@@ -119,72 +209,67 @@ const ManageTeachers = () => {
               </tr>
             </thead>
             <tbody>
-              {teachers.map((teacher, index) => {
-                const salary = Number(teacher.Salary);
-                const formattedSalary = !isNaN(salary) ? salary.toFixed(2) : 'N/A';
-                const age = teacher.Age !== null ? teacher.Age : 'Invalid age';
-
-                return (
-                  <tr key={teacher.TeacherID}>
-                    <td>{index + 1}</td>
-                    <td>{teacher.FirstName}</td>
-                    <td>{teacher.LastName}</td>
-                    <td>{teacher.Gender}</td>
-                    <td>{age}</td>
-                    <td>{teacher.ContactNumber}</td>
-                    <td>{teacher.Email}</td>
-                    <td>{teacher.Qualification}</td>
-                    <td>{teacher.ExperienceYears}</td>
-                    <td>
-                      {teacher.HireDate
-                        ? new Date(teacher.HireDate).toLocaleDateString()
-                        : ''}
-                    </td>
-                    <td>{teacher.SubjectsTaught}</td>
-                    <td>{formattedSalary}</td>
-                    <td>
-                      <button
-                        className="add-button"
-                        onClick={() => navigate('/admin/add-teacher')}
-                      >
-                        <img
-                          src="/plus.png"
-                          alt="Add Teacher"
-                          style={{ width: '25px', height: '25px', cursor: 'pointer' }}
-                        />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="edit-button"
-                        onClick={() => navigate(`/admin/edit-teacher/${teacher.TeacherID}`)}
-                      >
-                        <img
-                          src="/ic_edit.jpeg"
-                          alt="Edit Teacher"
-                          style={{ width: '25px', height: '25px', cursor: 'pointer' }}
-                        />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(teacher.TeacherID)}
-                        disabled={isDeleting}
-                      >
-                        <img
-                          src="/ic_del.jpeg"
-                          alt="Delete Teacher"
-                          style={{ width: '25px', height: '25px', cursor: 'pointer' }}
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {teachers.map((teacher, index) => (
+                <tr key={teacher.TeacherID}>
+                  <td>{index + 1}</td>
+                  <td>{teacher.FirstName}</td>
+                  <td>{teacher.LastName}</td>
+                  <td>{teacher.Gender}</td>
+                  <td>{teacher.Age}</td>
+                  <td>{teacher.ContactNumber}</td>
+                  <td>{teacher.Email}</td>
+                  <td>{teacher.Qualification}</td>
+                  <td>{teacher.ExperienceYears}</td>
+                  <td>{new Date(teacher.HireDate).toLocaleDateString()}</td>
+                  <td>{teacher.SubjectsTaught}</td>
+                  <td>{Number(teacher.Salary).toFixed(2)}</td>
+                  <td>
+                    <IconButton
+                      color="#28a745"
+                      hoverColor="#218838"
+                      onClick={() => navigate('/admin/add-teacher')}
+                    >
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                  </td>
+                  <td>
+                    <IconButton
+                      color="#ffc107"
+                      hoverColor="#e0a800"
+                      onClick={() => navigate(`/admin/edit-teacher/${teacher.TeacherID}`)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </td>
+                  <td>
+                    <IconButton
+                      color="#dc3545"
+                      hoverColor="#c82333"
+                      onClick={() => handleDelete(teacher.TeacherID)}
+                      disabled={isDeleting}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </td>
+                </tr>
+              ))}
             </tbody>
-          </table>
-        </>
+          </StyledTable>
+        </TableContainer>
+      )}
+
+      {teacherToDelete && (
+        <DeleteDialog>
+          <p>Are you sure you want to delete this teacher?</p>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <IconButton color="#dc3545" hoverColor="#c82333" onClick={confirmDelete}>
+              Yes
+            </IconButton>
+            <IconButton color="#6c757d" hoverColor="#5a6268" onClick={cancelDelete}>
+              No
+            </IconButton>
+          </div>
+        </DeleteDialog>
       )}
     </div>
   );

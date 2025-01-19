@@ -1,5 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Box } from '@mui/material';
+import styled from 'styled-components';
+
+const FormContainer = styled(Box)`
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 30px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+`;
+
+const CancelButton = styled(Button)`
+  background-color: #f44336;
+`;
 
 const EditParentForm = () => {
   const { id } = useParams();
@@ -9,7 +43,7 @@ const EditParentForm = () => {
     name: '',
     phone: '',
     email: '',
-    address: ''
+    address: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -38,7 +72,7 @@ const EditParentForm = () => {
     const { name, value } = e.target;
     setParent((prevParent) => ({
       ...prevParent,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -62,34 +96,6 @@ const EditParentForm = () => {
     }
   };
 
-  const formStyle = {
-    maxWidth: '600px',
-    margin: 'auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    backgroundColor: '#f9f9f9',
-    marginBottom: '30px'  // Added margin to create space between footer and form
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    margin: '5px 0',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-  };
-
-  const buttonStyle = {
-    padding: '10px 20px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '16px',
-  };
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -99,62 +105,68 @@ const EditParentForm = () => {
   }
 
   return (
-    <div style={formStyle}>
-      <h2>Edit Parent</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={parent.name}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-        </div>
+    <Container>
+      <FormContainer>
+        <h2>Edit Parent</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              value={parent.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={parent.email}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              value={parent.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="phone">Phone</label>
-          <input
-            type="text"
-            id="phone"
-            name="phone"
-            value={parent.phone || ''}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="phone">Phone</label>
+            <Input
+              type="text"
+              id="phone"
+              name="phone"
+              value={parent.phone || ''}
+              onChange={handleChange}
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="address">Address</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value={parent.address || ''}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="address">Address</label>
+            <Input
+              type="text"
+              id="address"
+              name="address"
+              value={parent.address || ''}
+              onChange={handleChange}
+            />
+          </div>
 
-        <button type="submit" style={buttonStyle}>Update Parent</button>
-      </form>
-    </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '20px' }}>
+            <Button type="submit">Update Parent</Button>
+            <CancelButton
+              type="button"
+              onClick={() => navigate('/admin/manage-parents')}
+            >
+              Cancel
+            </CancelButton>
+          </div>
+        </form>
+      </FormContainer>
+    </Container>
   );
 };
 
