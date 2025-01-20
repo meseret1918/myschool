@@ -1,26 +1,110 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import styled from 'styled-components';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const TableContainer = styled.div`
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  overflow-x: auto;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  th, td {
+    padding: 8px 12px;
+    text-align: justify;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+  }
+  th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+  }
+  th:nth-child(2), td:nth-child(2) {
+    width: 20%;
+  }
+  th:nth-child(3), td:nth-child(3) {
+    width: 20%;
+  }
+  th:nth-child(4), td:nth-child(4) {
+    width: 15%;
+  }
+  th:nth-child(5), td:nth-child(5) {
+    width: 10%;
+  }
+  th:nth-child(6), td:nth-child(6) {
+    width: 10%;
+  }
+`;
+
+const FlashMessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+`;
+
+const FlashMessage = styled.div`
+  text-align: center;
+  max-width: 600px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${(props) => (props.type === 'error' ? '#f8d7da' : '#d4edda')};
+  color: ${(props) => (props.type === 'error' ? '#721c24' : '#155724')};
+  border: 1px solid ${(props) => (props.type === 'error' ? '#f5c6cb' : '#c3e6cb')};
+`;
+
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: ${(props) => props.color || '#007bff'};
+  font-size: 20px;
+  span {
+    transition: color 0.3s;
+  }
+  text-align: left;
+  &:hover span {
+    color: ${(props) => props.hoverColor || '#0056b3'};
+  }
+  &:disabled {
+    color: #c0c0c0;
+    cursor: not-allowed;
+  }
+`;
 
 const ManageClasses = () => {
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [editingRecord, setEditingRecord] = useState(null);
-    const [formData, setFormData] = useState({
-        id: '',
-        name: '',
-        subject: '',
-    });
     const [successMessage, setSuccessMessage] = useState('');
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch class data
     useEffect(() => {
         const fetchClasses = async () => {
             try {
                 const response = await fetch('http://localhost:5000/api/classes');
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch class data. Status: ${response.status}`);
+                    throw new Error(`Failed to fetch classes data. Status: ${response.status}`);
                 }
                 const data = await response.json();
                 setClasses(data);
@@ -34,112 +118,32 @@ const ManageClasses = () => {
         fetchClasses();
     }, []);
 
-    // Handle edit action
-    const handleEdit = (id) => {
-        const recordToEdit = classes.find((record) => record.id === id);
-        setFormData({
-            ...recordToEdit,
-        });
-        setEditingRecord(id);
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+        setRecordToDelete(null);
     };
 
-    // Handle form field change
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+    const handleDeleteConfirm = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/classes/${recordToDelete}`, {
+                method: 'DELETE',
+            });
 
-    // Handle save action
-    const handleSave = async () => {
-        if (editingRecord) {
-            // Update existing class
-            try {
-                const response = await fetch(`http://localhost:5000/api/classes/${formData.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Failed to update record. Status: ${response.status}`);
-                }
-
-                const updatedClasses = classes.map((record) =>
-                    record.id === formData.id ? formData : record
-                );
-                setClasses(updatedClasses);
-                setSuccessMessage('Record updated successfully!');
-                setTimeout(() => {
-                    setSuccessMessage('');
-                    navigate('/teacher/manage-classes');
-                }, 3000); // Redirect after 3 seconds
-                setEditingRecord(null); // Close the edit form after saving
-            } catch (err) {
-                console.error(err.message);
-                alert(`Failed to update record: ${err.message}`);
+            if (response.ok) {
+                setClasses((prev) => prev.filter((record) => record.id !== recordToDelete));
+                setSuccessMessage('Record deleted successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                throw new Error(`Error deleting record. Status: ${response.status}`);
             }
-        } else {
-            // Add new class
-            try {
-                const response = await fetch('http://localhost:5000/api/classes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
 
-                if (!response.ok) {
-                    throw new Error(`Failed to add new record. Status: ${response.status}`);
-                }
-
-                const newClass = await response.json();
-                setClasses((prev) => [...prev, newClass]);
-                setSuccessMessage('New class added successfully!');
-                setTimeout(() => {
-                    setSuccessMessage('');
-                    setFormData({ id: '', name: '', subject: '' }); // Reset form
-                }, 3000); // Reset after 3 seconds
-            } catch (err) {
-                console.error(err.message);
-                alert(`Failed to add new record: ${err.message}`);
-            }
+            setDeleteDialogOpen(false);
+        } catch (err) {
+            console.error(err.message);
+            alert(`Failed to delete record: ${err.message}`);
         }
     };
 
-    // Handle cancel action
-    const handleCancel = () => {
-        setEditingRecord(null); // Close the edit form
-        setFormData({ id: '', name: '', subject: '' }); // Reset form
-    };
-
-    // Handle delete action
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this record?');
-        if (confirmDelete) {
-            try {
-                const response = await fetch(`http://localhost:5000/api/classes/${id}`, {
-                    method: 'DELETE',
-                });
-
-                if (response.ok) {
-                    setClasses((prev) => prev.filter((record) => record.id !== id));
-                } else {
-                    throw new Error(`Error deleting record. Status: ${response.status}`);
-                }
-            } catch (err) {
-                console.error(err.message);
-                alert(`Failed to delete record: ${err.message}`);
-            }
-        }
-    };
-
-    // Conditional rendering for loading, error, or empty states
     if (loading) {
         return <div>Loading class data...</div>;
     }
@@ -149,176 +153,95 @@ const ManageClasses = () => {
     }
 
     return (
-        <div style={{ padding: '20px', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Manage Classes</h1>
+        <div>
+            <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
+                <a href="#" onClick={() => navigate('/teacher/Dashboard')}>
+                    🔙
+                </a>
+            </Box>
 
-            {/* Success Message */}
+            <Box my={2} textAlign="center">
+                <h2>Manage Classes</h2>
+            </Box>
+
             {successMessage && (
-                <div style={{ color: 'green', fontSize: '18px', marginBottom: '20px' }}>
-                    {successMessage}
-                </div>
+                <FlashMessageContainer>
+                    <FlashMessage type="success">{successMessage}</FlashMessage>
+                </FlashMessageContainer>
             )}
 
-            {/* Add New Class Button */}
-            {!editingRecord && (
-                <button
-                    onClick={() => setEditingRecord('new')}
-                    style={{ ...buttonStyle, backgroundColor: '#008CBA', marginBottom: '20px' }}
-                >
-                    Add New Class
-                </button>
-            )}
-
-            {/* Add New Class Form */}
-            {editingRecord === 'new' && (
-                <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc' }}>
-                    <h3>Add New Class</h3>
-                    <form>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Name: </label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                style={{ padding: '5px', marginLeft: '10px' }}
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Subject: </label>
-                            <input
-                                type="text"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleInputChange}
-                                style={{ padding: '5px', marginLeft: '10px' }}
-                            />
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
-                            <button
-                                type="button"
-                                onClick={handleSave}
-                                style={{ ...buttonStyle, backgroundColor: '#008CBA' }}
-                            >
-                                Add Class
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleCancel}
-                                style={{ ...buttonStyle, backgroundColor: '#f44336' }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-
-            {/* Edit Form */}
-            {editingRecord && editingRecord !== 'new' && (
-                <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc' }}>
-                    <h3>Edit Class Record</h3>
-                    <form>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>ID: </label>
-                            <input
-                                type="text"
-                                name="id"
-                                value={formData.id}
-                                disabled
-                                style={{ padding: '5px', marginLeft: '10px' }}
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Name: </label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                style={{ padding: '5px', marginLeft: '10px' }}
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Subject: </label>
-                            <input
-                                type="text"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleInputChange}
-                                style={{ padding: '5px', marginLeft: '10px' }}
-                            />
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
-                            <button
-                                type="button"
-                                onClick={handleSave}
-                                style={{ ...buttonStyle, backgroundColor: '#4CAF50' }}
-                            >
-                                Save
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleCancel}
-                                style={{ ...buttonStyle, backgroundColor: '#f44336' }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-
-            {/* Classes Table */}
-            {!editingRecord && (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+            <TableContainer>
+                <StyledTable>
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Name</th>
+                            <th>Class Name</th>
                             <th>Subject</th>
-                            <th>Actions</th>
+                            <th>Add</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {classes.map((record) => (
                             <tr key={record.id}>
                                 <td>{record.id}</td>
-                                <td>{record.name}</td>
+                                <td>{record.class_name}</td>
                                 <td>{record.subject}</td>
                                 <td>
-                                    <button
-                                        onClick={() => handleEdit(record.id)}
-                                        style={{ ...buttonStyle, backgroundColor: '#4CAF50' }}
+                                    <Link to="/teacher/add-class">
+                                        <IconButton color="green">
+                                            <span>
+                                                <AddCircleOutlineIcon />
+                                            </span>
+                                        </IconButton>
+                                    </Link>
+                                </td>
+                                <td>
+                                    <Link to={`/teacher/edit-class/${record.id}`}>
+                                        <IconButton color="blue">
+                                            <span>
+                                                <EditIcon />
+                                            </span>
+                                        </IconButton>
+                                    </Link>
+                                </td>
+                                <td>
+                                    <IconButton
+                                        onClick={() => {
+                                            setDeleteDialogOpen(true);
+                                            setRecordToDelete(record.id);
+                                        }}
+                                        color="red"
                                     >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(record.id)}
-                                        style={{ ...buttonStyle, backgroundColor: '#f44336' }}
-                                    >
-                                        Delete
-                                    </button>
+                                        <span>
+                                            <DeleteIcon />
+                                        </span>
+                                    </IconButton>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
-                </table>
-            )}
+                </StyledTable>
+            </TableContainer>
+
+            {/* Delete confirmation dialog */}
+            <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete this record?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteDialogClose} color="primary">
+                        No
+                    </Button>
+                    <Button onClick={handleDeleteConfirm} color="secondary" autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
-};
-
-// Button style
-const buttonStyle = {
-    color: 'white',
-    padding: '10px 20px',
-    margin: '5px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
 };
 
 export default ManageClasses;

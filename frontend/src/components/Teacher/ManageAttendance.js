@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -100,21 +100,9 @@ const ManageAttendance = () => {
     const [attendance, setAttendance] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [editingRecord, setEditingRecord] = useState(null);
-    const [formData, setFormData] = useState({
-        id: '',
-        index_number: '',
-        date: '',
-        month: '',
-        year: '',
-        time: '',
-        status1: '',
-        status2: '',
-    });
     const [successMessage, setSuccessMessage] = useState('');
-    const [confirmationMessage, setConfirmationMessage] = useState('');
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); // State to control the dialog
-    const [recordToDelete, setRecordToDelete] = useState(null); // Store the record that will be deleted
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -136,59 +124,9 @@ const ManageAttendance = () => {
         fetchAttendance();
     }, []);
 
-    const handleEdit = (id) => {
-        const recordToEdit = attendance.find((record) => record.id === id);
-        setFormData({
-            ...recordToEdit,
-        });
-        setEditingRecord(id);
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
-    const handleSave = async () => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/attendance/${formData.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to update record. Status: ${response.status}`);
-            }
-
-            const updatedAttendance = attendance.map((record) =>
-                record.id === formData.id ? formData : record
-            );
-            setAttendance(updatedAttendance);
-            setSuccessMessage('Record updated successfully!');
-            setTimeout(() => {
-                setSuccessMessage('');
-                navigate('/teacher/manage-attendance');
-            }, 3000); // Redirect after 3 seconds
-            setEditingRecord(null); // Close the edit form after saving
-        } catch (err) {
-            console.error(err.message);
-            alert(`Failed to update record: ${err.message}`);
-        }
-    };
-
-    const handleCancel = () => {
-        setEditingRecord(null); // Close the edit form
-    };
-
     const handleDeleteDialogClose = () => {
         setDeleteDialogOpen(false);
-        setRecordToDelete(null); // Reset the record to delete
+        setRecordToDelete(null);
     };
 
     const handleDeleteConfirm = async () => {
@@ -200,32 +138,16 @@ const ManageAttendance = () => {
             if (response.ok) {
                 setAttendance((prev) => prev.filter((record) => record.id !== recordToDelete));
                 setSuccessMessage('Record deleted successfully!');
-                setTimeout(() => {
-                    setSuccessMessage('');
-                }, 3000);
+                setTimeout(() => setSuccessMessage(''), 3000);
             } else {
                 throw new Error(`Error deleting record. Status: ${response.status}`);
             }
 
-            setDeleteDialogOpen(false); // Close the delete dialog after the operation
+            setDeleteDialogOpen(false);
         } catch (err) {
             console.error(err.message);
             alert(`Failed to delete record: ${err.message}`);
         }
-    };
-
-    const handleAdd = () => {
-        setFormData({
-            id: '',
-            index_number: '',
-            date: '',
-            month: '',
-            year: '',
-            time: '',
-            status1: '',
-            status2: '',
-        });
-        setEditingRecord('new'); // To indicate we are adding a new record
     };
 
     if (loading) {
@@ -254,151 +176,73 @@ const ManageAttendance = () => {
                 </FlashMessageContainer>
             )}
 
-            {editingRecord ? (
-                <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc' }}>
-                    <h3>{editingRecord === 'new' ? 'Add Attendance Record' : 'Edit Attendance Record'}</h3>
-                    <form>
-                        <div>
-                            <label>ID:</label>
-                            <input type="text" name="id" value={formData.id} disabled />
-                        </div>
-                        <div>
-                            <label>Index Number:</label>
-                            <input
-                                type="text"
-                                name="index_number"
-                                value={formData.index_number}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Date:</label>
-                            <input
-                                type="date"
-                                name="date"
-                                value={formData.date}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Month:</label>
-                            <input
-                                type="text"
-                                name="month"
-                                value={formData.month}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Year:</label>
-                            <input
-                                type="number"
-                                name="year"
-                                value={formData.year}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Time:</label>
-                            <input
-                                type="time"
-                                name="time"
-                                value={formData.time}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Status 1:</label>
-                            <input
-                                type="text"
-                                name="status1"
-                                value={formData.status1}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Status 2:</label>
-                            <input
-                                type="text"
-                                name="status2"
-                                value={formData.status2}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div>
-                            <button type="button" onClick={handleSave}>Save</button>
-                            <button type="button" onClick={handleCancel}>Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            ) : (
-                <TableContainer>
-                    <StyledTable>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Index Number</th>
-                                <th>Date</th>
-                                <th>Month</th>
-                                <th>Year</th>
-                                <th>Time</th>
-                                <th>Status 1</th>
-                                <th>Status 2</th>
-                                <th>Add</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {attendance.map((record) => (
-                                <tr key={record.id}>
-                                    <td>{record.id}</td>
-                                    <td>{record.index_number}</td>
-                                    <td>{new Date(record.date).toLocaleDateString()}</td>
-                                    <td>{record.month}</td>
-                                    <td>{record.year}</td>
-                                    <td>{record.time}</td>
-                                    <td>{record.status1}</td>
-                                    <td>{record.status2}</td>
-                                    <td>
-                                        <IconButton onClick={handleAdd} color="green">
+            <TableContainer>
+                <StyledTable>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Index Number</th>
+                            <th>Date</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Time</th>
+                            <th>Status 1</th>
+                            <th>Status 2</th>
+                            <th>Add</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {attendance.map((record) => (
+                            <tr key={record.id}>
+                                <td>{record.id}</td>
+                                <td>{record.index_number}</td>
+                                <td>{new Date(record.date).toLocaleDateString()}</td>
+                                <td>{record.month}</td>
+                                <td>{record.year}</td>
+                                <td>{record.time}</td>
+                                <td>{record.status1}</td>
+                                <td>{record.status2}</td>
+                                <td>
+                                    <Link to="/teacher/add-attendance">
+                                        <IconButton color="green">
                                             <span>
                                                 <AddCircleOutlineIcon />
                                             </span>
                                         </IconButton>
-                                    </td>
-                                    <td>
-                                        <IconButton onClick={() => handleEdit(record.id)} color="blue">
+                                    </Link>
+                                </td>
+                                <td>
+                                    <Link to={`/teacher/edit-attendance/${record.id}`}>
+                                        <IconButton color="blue">
                                             <span>
                                                 <EditIcon />
                                             </span>
                                         </IconButton>
-                                    </td>
-                                    <td>
-                                        <IconButton
-                                            onClick={() => {
-                                                setDeleteDialogOpen(true);
-                                                setRecordToDelete(record.id);
-                                            }}
-                                            color="red"
-                                        >
-                                            <span>
-                                                <DeleteIcon />
-                                            </span>
-                                        </IconButton>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </StyledTable>
-                </TableContainer>
-            )}
+                                    </Link>
+                                </td>
+                                <td>
+                                    <IconButton
+                                        onClick={() => {
+                                            setDeleteDialogOpen(true);
+                                            setRecordToDelete(record.id);
+                                        }}
+                                        color="red"
+                                    >
+                                        <span>
+                                            <DeleteIcon />
+                                        </span>
+                                    </IconButton>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </StyledTable>
+            </TableContainer>
 
             {/* Delete confirmation dialog */}
-            <Dialog
-                open={deleteDialogOpen}
-                onClose={handleDeleteDialogClose}
-            >
+            <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
                     Are you sure you want to delete this record?
@@ -407,11 +251,7 @@ const ManageAttendance = () => {
                     <Button onClick={handleDeleteDialogClose} color="primary">
                         No
                     </Button>
-                    <Button
-                        onClick={handleDeleteConfirm}
-                        color="secondary"
-                        autoFocus
-                    >
+                    <Button onClick={handleDeleteConfirm} color="secondary" autoFocus>
                         Yes
                     </Button>
                 </DialogActions>

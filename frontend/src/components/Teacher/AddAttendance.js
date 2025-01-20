@@ -33,142 +33,150 @@ const Button = styled.button`
 `;
 
 const AddAttendance = () => {
-  const [attendanceData, setAttendanceData] = useState({
-    index_number: '',
-    date: '',
-    month: '',
-    year: '',
-    time: '',
-    _status1: '',
-    _status2: '',
-  });
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+    const [formData, setFormData] = useState({
+        index_number: '',
+        date: '',
+        month: '',
+        year: '',
+        time: '',
+        status1: '',
+        status2: '',
+    });
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAttendanceData((prevData) => ({ ...prevData, [name]: value }));
-  };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  const handleSubmit = async () => {
-    if (!attendanceData.index_number || !attendanceData.date || !attendanceData.month || !attendanceData.year || !attendanceData.time || !attendanceData._status1 || !attendanceData._status2) {
-      setErrorMessage('All fields are required');
-      setSuccessMessage(null);
-      return;
-    }
+    const handleSave = async () => {
+        if (!formData.index_number || !formData.date || !formData.month || !formData.year || !formData.time || !formData.status1 || !formData.status2) {
+            setErrorMessage('All fields are required');
+            setSuccessMessage(null);
+            return;
+        }
 
-    try {
-      const response = await fetch('http://localhost:5000/api/attendance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(attendanceData),
-      });
+        try {
+            const response = await fetch('http://localhost:5000/api/attendance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-      if (!response.ok) {
-        throw new Error('Failed to add attendance');
-      }
+            if (!response.ok) {
+                throw new Error('Failed to add record');
+            }
 
-      setSuccessMessage('Attendance added successfully!');
-      setAttendanceData({ index_number: '', date: '', month: '', year: '', time: '', _status1: '', _status2: '' });
-      setErrorMessage(null);
-      setTimeout(() => navigate('/teacher/manage-attendance'), 2000);
-    } catch (error) {
-      setErrorMessage('Error adding attendance. Please try again later.');
-      setSuccessMessage(null);
-    }
-  };
+            setSuccessMessage('Attendance record added successfully!');
+            setFormData({
+                index_number: '',
+                date: '',
+                month: '',
+                year: '',
+                time: '',
+                status1: '',
+                status2: '',
+            });
+            setErrorMessage(null);
+            setTimeout(() => navigate('/teacher/manage-attendance'), 2000);
+        } catch (err) {
+            setErrorMessage('Error adding record. Please try again later.');
+            setSuccessMessage(null);
+        }
+    };
 
-  return (
-    <FormContainer>
-      <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Attendance</h3>
+    return (
+        <FormContainer>
+            <h3 style={{ textAlign: 'center', color: '#333' }}>Add Attendance Record</h3>
 
-      {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
-      {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
+            {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
+            {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
 
-      <div>
-        <Input
-          type="number"
-          name="index_number"
-          placeholder="Student Index Number"
-          value={attendanceData.index_number}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="date"
-          name="date"
-          value={attendanceData.date}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="text"
-          name="month"
-          placeholder="Month"
-          value={attendanceData.month}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="number"
-          name="year"
-          placeholder="Year"
-          value={attendanceData.year}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="time"
-          name="time"
-          value={attendanceData.time}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="text"
-          name="_status1"
-          placeholder="Status 1"
-          value={attendanceData._status1}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="text"
-          name="_status2"
-          placeholder="Status 2"
-          value={attendanceData._status2}
-          onChange={handleChange}
-        />
-      </div>
+            <div>
+                <Input
+                    type="text"
+                    name="index_number"
+                    placeholder="Index Number"
+                    value={formData.index_number}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="text"
+                    name="month"
+                    placeholder="Month"
+                    value={formData.month}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="number"
+                    name="year"
+                    placeholder="Year"
+                    value={formData.year}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="text"
+                    name="status1"
+                    placeholder="Status 1"
+                    value={formData.status1}
+                    onChange={handleInputChange}
+                />
+            </div>
+            <div>
+                <Input
+                    type="text"
+                    name="status2"
+                    placeholder="Status 2"
+                    value={formData.status2}
+                    onChange={handleInputChange}
+                />
+            </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          onClick={handleSubmit}
-          style={{ backgroundColor: '#007bff' }}
-        >
-          Add Attendance
-        </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button
+                    onClick={handleSave}
+                    style={{ backgroundColor: '#007bff' }}
+                >
+                    Save
+                </Button>
 
-        <Button
-          type="button"
-          onClick={() => navigate('/teacher/manage-attendance')}
-          style={{ backgroundColor: '#f44336' }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </FormContainer>
-  );
+                <Button
+                    type="button"
+                    onClick={() => navigate('/teacher/manage-attendance')}
+                    style={{ backgroundColor: '#f44336' }}
+                >
+                    Cancel
+                </Button>
+            </div>
+        </FormContainer>
+    );
 };
 
 export default AddAttendance;

@@ -40,8 +40,10 @@ import ManageClasses from './components/Teacher/ManageClasses';
 import ManageExams from './components/Teacher/ManageExams';
 import EditAttendance from './components/Teacher/EditAttendance';
 import AddAttendance from './components/Teacher/AddAttendance';
-import AddMark from './components/Teacher/AddMark';  // Import AddMark
-import EditMark from './components/Teacher/EditMark';  // Import EditMark
+import AddMark from './components/Teacher/AddMark';
+import EditMark from './components/Teacher/EditMark';
+import AddClass from './components/Teacher/AddClass';
+import EditClass from './components/Teacher/EditClass';
 
 // Parent Management Components
 import SendMessageParent from './components/Parent/SendMessage'; // Ensure this is defined
@@ -117,8 +119,10 @@ const App = () => {
           <Route path="/teacher/manage-exams" element={renderProtectedRoute("teacher", ManageExams)} />
           
           {/* Routes for Adding and Editing Marks */}
-          <Route path="/teacher/add-mark" element={renderProtectedRoute("teacher", AddMark)} />  {/* AddMark route */}
-          <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} />  {/* EditMark route */}
+          <Route path="/teacher/add-mark" element={renderProtectedRoute("teacher", AddMark)} />  
+          <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} /> 
+          <Route path="/teacher/add-class" element={renderProtectedRoute("teacher", AddClass)} />  
+          <Route path="/teacher/edit-class/:id" element={renderProtectedRoute("teacher", EditClass)} /> 
 
           {/* Protected Routes for Parent */}
           <Route path="/parent/dashboard" element={renderProtectedRoute("parent", ParentDashboard)} />

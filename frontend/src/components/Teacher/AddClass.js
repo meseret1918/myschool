@@ -32,12 +32,12 @@ const Button = styled.button`
   color: white;
 `;
 
-const AddMark = () => {
-  const [markData, setMarkData] = useState({
-    student_id: '',
+const AddClass = () => {
+  const [classData, setClassData] = useState({
+    class_name: '',
     subject: '',
-    marks: '',
-    exam_type: '',
+    teacher: '',
+    time: '',
     date: '',
   });
   const [successMessage, setSuccessMessage] = useState(null);
@@ -47,52 +47,52 @@ const AddMark = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setMarkData((prevMark) => ({ ...prevMark, [name]: value }));
+    setClassData((prevClass) => ({ ...prevClass, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    if (!markData.student_id || !markData.subject || !markData.marks || !markData.exam_type || !markData.date) {
+    if (!classData.class_name || !classData.subject || !classData.teacher || !classData.time || !classData.date) {
       setErrorMessage('All fields are required');
       setSuccessMessage(null);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/marks', {
+      const response = await fetch('http://localhost:5000/api/classes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(markData),
+        body: JSON.stringify(classData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add mark');
+        throw new Error('Failed to add class');
       }
 
-      setSuccessMessage('Mark added successfully!');
-      setMarkData({ student_id: '', subject: '', marks: '', exam_type: '', date: '' });
+      setSuccessMessage('Class added successfully!');
+      setClassData({ class_name: '', subject: '', teacher: '', time: '', date: '' });
       setErrorMessage(null);
-      setTimeout(() => navigate('/teacher/manage-marks'), 2000);
+      setTimeout(() => navigate('/teacher/manage-classes'), 2000);
     } catch (error) {
-      setErrorMessage('Error adding mark. Please try again later.');
+      setErrorMessage('Error adding class. Please try again later.');
       setSuccessMessage(null);
     }
   };
 
   return (
     <FormContainer>
-      <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Mark</h3>
+      <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Class</h3>
 
       {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
       {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
 
       <div>
         <Input
-          type="number"
-          name="student_id"
-          placeholder="Student ID"
-          value={markData.student_id}
+          type="text"
+          name="class_name"
+          placeholder="Class Name"
+          value={classData.class_name}
           onChange={handleChange}
         />
       </div>
@@ -101,33 +101,35 @@ const AddMark = () => {
           type="text"
           name="subject"
           placeholder="Subject"
-          value={markData.subject}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="number"
-          name="marks"
-          placeholder="Marks"
-          value={markData.marks}
+          value={classData.subject}
           onChange={handleChange}
         />
       </div>
       <div>
         <Input
           type="text"
-          name="exam_type"
-          placeholder="Exam Type"
-          value={markData.exam_type}
+          name="teacher"
+          placeholder="Teacher Name"
+          value={classData.teacher}
           onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="text"
+          name="time"
+          placeholder="Time"
+          value={classData.time}
+          onChange={handleChange}
+          type="time"
+          required
         />
       </div>
       <div>
         <Input
           type="date"
           name="date"
-          value={markData.date}
+          value={classData.date}
           onChange={handleChange}
         />
       </div>
@@ -137,12 +139,12 @@ const AddMark = () => {
           onClick={handleSubmit}
           style={{ backgroundColor: '#007bff' }}
         >
-          Add Mark
+          Add Class
         </Button>
 
         <Button
           type="button"
-          onClick={() => navigate('/teacer/manage-marks')}
+          onClick={() => navigate('/teacher/manage-classes')}
           style={{ backgroundColor: '#f44336' }}
         >
           Cancel
@@ -152,4 +154,4 @@ const AddMark = () => {
   );
 };
 
-export default AddMark;
+export default AddClass;
