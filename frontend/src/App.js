@@ -39,6 +39,7 @@ import ManageAttendance from './components/Teacher/ManageAttendance';
 import ManageClasses from './components/Teacher/ManageClasses';
 import ManageExams from './components/Teacher/ManageExams';
 import EditAttendance from './components/Teacher/EditAttendance';
+import AddAttendance from './components/Teacher/AddAttendance';
 import AddMark from './components/Teacher/AddMark';  // Import AddMark
 import EditMark from './components/Teacher/EditMark';  // Import EditMark
 
@@ -103,7 +104,8 @@ const App = () => {
 
           {/* Routes for Editing and Deleting Students */}
           <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />
-          <Route path="/teacher/edit/:id" element={renderProtectedRoute("teacher", EditAttendance)} />
+          <Route path="/teacher/edit-attendance/:id" element={renderProtectedRoute("teacher", EditAttendance)} />
+          <Route path="/teacher/add-attendance" element={renderProtectedRoute("teacher", AddAttendance)} />
 
           {/* Protected Routes for Teacher */}
           <Route path="/teacher/dashboard" element={renderProtectedRoute("teacher", TeacherDashboard)} />

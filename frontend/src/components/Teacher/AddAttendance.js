@@ -32,13 +32,15 @@ const Button = styled.button`
   color: white;
 `;
 
-const AddMark = () => {
-  const [markData, setMarkData] = useState({
-    student_id: '',
-    subject: '',
-    marks: '',
-    exam_type: '',
+const AddAttendance = () => {
+  const [attendanceData, setAttendanceData] = useState({
+    index_number: '',
     date: '',
+    month: '',
+    year: '',
+    time: '',
+    _status1: '',
+    _status2: '',
   });
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -47,42 +49,42 @@ const AddMark = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setMarkData((prevMark) => ({ ...prevMark, [name]: value }));
+    setAttendanceData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    if (!markData.student_id || !markData.subject || !markData.marks || !markData.exam_type || !markData.date) {
+    if (!attendanceData.index_number || !attendanceData.date || !attendanceData.month || !attendanceData.year || !attendanceData.time || !attendanceData._status1 || !attendanceData._status2) {
       setErrorMessage('All fields are required');
       setSuccessMessage(null);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/marks', {
+      const response = await fetch('http://localhost:5000/api/attendance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(markData),
+        body: JSON.stringify(attendanceData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add mark');
+        throw new Error('Failed to add attendance');
       }
 
-      setSuccessMessage('Mark added successfully!');
-      setMarkData({ student_id: '', subject: '', marks: '', exam_type: '', date: '' });
+      setSuccessMessage('Attendance added successfully!');
+      setAttendanceData({ index_number: '', date: '', month: '', year: '', time: '', _status1: '', _status2: '' });
       setErrorMessage(null);
-      setTimeout(() => navigate('/admin/manage-marks'), 2000);
+      setTimeout(() => navigate('/teacher/manage-attendance'), 2000);
     } catch (error) {
-      setErrorMessage('Error adding mark. Please try again later.');
+      setErrorMessage('Error adding attendance. Please try again later.');
       setSuccessMessage(null);
     }
   };
 
   return (
     <FormContainer>
-      <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Mark</h3>
+      <h3 style={{ textAlign: 'center', color: '#333' }}>Add New Attendance</h3>
 
       {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
       {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
@@ -90,36 +92,9 @@ const AddMark = () => {
       <div>
         <Input
           type="number"
-          name="student_id"
-          placeholder="Student ID"
-          value={markData.student_id}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="text"
-          name="subject"
-          placeholder="Subject"
-          value={markData.subject}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="number"
-          name="marks"
-          placeholder="Marks"
-          value={markData.marks}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <Input
-          type="text"
-          name="exam_type"
-          placeholder="Exam Type"
-          value={markData.exam_type}
+          name="index_number"
+          placeholder="Student Index Number"
+          value={attendanceData.index_number}
           onChange={handleChange}
         />
       </div>
@@ -127,7 +102,51 @@ const AddMark = () => {
         <Input
           type="date"
           name="date"
-          value={markData.date}
+          value={attendanceData.date}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="text"
+          name="month"
+          placeholder="Month"
+          value={attendanceData.month}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="number"
+          name="year"
+          placeholder="Year"
+          value={attendanceData.year}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="time"
+          name="time"
+          value={attendanceData.time}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="text"
+          name="_status1"
+          placeholder="Status 1"
+          value={attendanceData._status1}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <Input
+          type="text"
+          name="_status2"
+          placeholder="Status 2"
+          value={attendanceData._status2}
           onChange={handleChange}
         />
       </div>
@@ -137,12 +156,12 @@ const AddMark = () => {
           onClick={handleSubmit}
           style={{ backgroundColor: '#007bff' }}
         >
-          Add Mark
+          Add Attendance
         </Button>
 
         <Button
           type="button"
-          onClick={() => navigate('/admin/manage-marks')}
+          onClick={() => navigate('/teacher/manage-attendance')}
           style={{ backgroundColor: '#f44336' }}
         >
           Cancel
@@ -152,4 +171,4 @@ const AddMark = () => {
   );
 };
 
-export default AddMark;
+export default AddAttendance;

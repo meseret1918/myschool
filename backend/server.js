@@ -33,7 +33,7 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const parentRoutes = require('./routes/parentRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
-const studentAttendanceRoutes = require('./routes/studentAttendanceRoutes');
+const attendanceRoutes = require('./routes/attendanceRoutes');
 const marksRoutes = require('./routes/marksRoutes');
 const classRoutes = require('./routes/classRoutes');
 
@@ -45,7 +45,7 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/parents', parentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/attendance', studentAttendanceRoutes);
+app.use('/api/attendance', attendanceRoutes);
 app.use('/api/marks', marksRoutes);
 app.use('/api/classes', classRoutes);
 

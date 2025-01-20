@@ -34,6 +34,27 @@ const StyledTable = styled.table`
   tr:hover {
     background-color: #f1f1f1;
   }
+  th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+  }
+  th:nth-child(2), td:nth-child(2) {
+    width: 15%;
+  }
+  th:nth-child(3), td:nth-child(3) {
+    width: 25%;
+  }
+  th:nth-child(4), td:nth-child(4) {
+    width: 10%;
+  }
+  th:nth-child(5), td:nth-child(5) {
+    width: 15%;
+  }
+  th:nth-child(6), td:nth-child(6) {
+    width: 10%;
+  }
+  th:nth-last-child(-n+3), td:nth-last-child(-n+3) {
+    width: 5%;
+  }
 `;
 
 const FlashMessageContainer = styled.div`
@@ -59,8 +80,16 @@ const IconButton = styled.button`
   cursor: pointer;
   color: ${(props) => props.color || '#007bff'};
   font-size: 20px;
-  &:hover {
+  span {
+    transition: color 0.3s;
+  }
+  text-align: left;
+  &:hover span {
     color: ${(props) => props.hoverColor || '#0056b3'};
+  }
+  &:disabled {
+    color: #c0c0c0;
+    cursor: not-allowed;
   }
 `;
 
@@ -68,35 +97,9 @@ const GoBackLink = styled.a`
   font-size: 24px;
   color: #6c757d;
   text-decoration: none;
+  cursor: pointer;
   &:hover {
     color: #5a6268;
-  }
-`;
-
-const DeleteDialog = styled.div`
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  text-align: center;
-`;
-
-const DeleteDialogButton = styled.button`
-  background-color: ${(props) => (props.cancel ? '#6c757d' : '#dc3545')};
-  border: none;
-  color: #ffffff;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${(props) => (props.cancel ? '#5a6268' : '#c82333')};
   }
 `;
 
@@ -243,11 +246,13 @@ const ManageMarks = () => {
       {markToDelete && (
         <DeleteDialog>
           <p>Are you sure you want to delete this mark?</p>
-          <div>
-            <DeleteDialogButton onClick={confirmDelete}>Yes</DeleteDialogButton>
-            <DeleteDialogButton cancel onClick={cancelDelete}>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <IconButton color="#dc3545" hoverColor="#c82333" onClick={confirmDelete}>
+              Yes
+            </IconButton>
+            <IconButton color="#6c757d" hoverColor="#5a6268" onClick={cancelDelete}>
               No
-            </DeleteDialogButton>
+            </IconButton>
           </div>
         </DeleteDialog>
       )}
