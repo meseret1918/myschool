@@ -79,9 +79,9 @@ const SearchInput = styled.input`
   border: 1px solid #ccc;
 `;
 
-const ViewTeachers = () => {
-  const [teachers, setTeachers] = useState([]);
-  const [filteredTeachers, setFilteredTeachers] = useState([]);
+const ViewSubjects = () => {
+  const [subjects, setSubjects] = useState([]);
+  const [filteredSubjects, setFilteredSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,16 +89,17 @@ const ViewTeachers = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTeachers = async () => {
+    const fetchSubjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/teachers');
+        const response = await fetch('http://localhost:5000/api/subjects');
         if (!response.ok) {
-          throw new Error('Error fetching teachers');
+          const errorDetails = await response.text();
+          throw new Error(`Error fetching subjects: ${response.status} - ${errorDetails}`);
         }
         const data = await response.json();
-        setTeachers(data);
-        setFilteredTeachers(data); // Initially display all teachers
+        setSubjects(data);
+        setFilteredSubjects(data); // Initially display all subjects
       } catch (error) {
         setError(error.message);
         setFlashMessage({ type: 'error', message: error.message });
@@ -107,7 +108,7 @@ const ViewTeachers = () => {
       }
     };
 
-    fetchTeachers();
+    fetchSubjects();
   }, []);
 
   // Handle search query change
@@ -115,20 +116,21 @@ const ViewTeachers = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    // Filter teachers by their name (FirstName + LastName)
+    // Filter subjects by subject name or code
     if (query) {
-      const filtered = teachers.filter(
-        (teacher) =>
-          `${teacher.FirstName} ${teacher.LastName}`.toLowerCase().includes(query.toLowerCase())
+      const filtered = subjects.filter(
+        (subject) =>
+          subject.subName.toLowerCase().includes(query.toLowerCase()) ||
+          subject.subCode.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredTeachers(filtered);
+      setFilteredSubjects(filtered);
     } else {
-      setFilteredTeachers(teachers); // Reset to all teachers if search query is cleared
+      setFilteredSubjects(subjects); // Reset to all subjects if search query is cleared
     }
   };
 
   const goBack = () => {
-    navigate('/Parent/Dashboard');
+    navigate('/Student/Dashboard');
   };
 
   return (
@@ -140,14 +142,14 @@ const ViewTeachers = () => {
       </Box>
 
       <Box my={2} textAlign="center">
-        <h2>View Teachers</h2>
+        <h2>View Subjects</h2>
       </Box>
 
       {/* Search bar aligned to the right */}
       <Box my={2} display="flex" justifyContent="flex-end">
         <SearchInput
           type="text"
-          placeholder="Search by Name"
+          placeholder="Search by Subject Name or Code"
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -163,38 +165,36 @@ const ViewTeachers = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : filteredTeachers.length === 0 ? (
-        <p>No teachers found</p>
+      ) : filteredSubjects.length === 0 ? (
+        <p>No subjects found</p>
       ) : (
         <TableContainer>
           <StyledTable>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Gender</th>
-                <th>Contact Number</th>
-                <th>Qualification</th>
-                <th>Experience (Years)</th>
-                <th>Hire Date</th>
-                <th>Subjects Taught</th>
-                <th>Salary</th>
+                <th>Subject Name</th>
+                <th>Subject Code</th>
+                <th>Sessions</th>
+                <th>Class ID</th>
+                <th>School ID</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Teacher ID</th>
               </tr>
             </thead>
             <tbody>
-              {filteredTeachers.map((teacher, index) => (
-                <tr key={teacher.TeacherID}>
+              {filteredSubjects.map((subject, index) => (
+                <tr key={subject.id}>
                   <td>{index + 1}</td>
-                  <td>{`${teacher.FirstName} ${teacher.LastName}`}</td>
-                  <td>{teacher.Email}</td>
-                  <td>{teacher.Gender}</td>
-                  <td>{teacher.ContactNumber}</td>
-                  <td>{teacher.Qualification}</td>
-                  <td>{teacher.ExperienceYears}</td>
-                  <td>{teacher.HireDate}</td>
-                  <td>{teacher.SubjectsTaught}</td>
-                  <td>{teacher.Salary}</td>
+                  <td>{subject.subName}</td>
+                  <td>{subject.subCode}</td>
+                  <td>{subject.sessions}</td>
+                  <td>{subject.sclassId}</td>
+                  <td>{subject.schoolId}</td>
+                  <td>{new Date(subject.createdAt).toLocaleString()}</td>
+                  <td>{new Date(subject.updatedAt).toLocaleString()}</td>
+                  <td>{subject.teacherId}</td>
                 </tr>
               ))}
             </tbody>
@@ -205,4 +205,4 @@ const ViewTeachers = () => {
   );
 };
 
-export default ViewTeachers;
+export default ViewSubjects;

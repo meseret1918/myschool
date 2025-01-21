@@ -46,14 +46,20 @@ import AddClass from './components/Teacher/AddClass';
 import EditClass from './components/Teacher/EditClass';
 
 // Parent Management Components
-import SendMessageParent from './components/Parent/SendMessage'; // Ensure this is defined
-import ViewAttendance from './components/Parent/ViewAttendance';
-import ViewEvents from './components/Parent/ViewEvents';
-import ViewMarks from './components/Parent/ViewMarks';
-import ViewRoutines from './components/Parent/ViewRoutines';
-import ViewSubjects from './components/Parent/ViewSubjects';
-import ViewTeachers from './components/Parent/ViewTeachers';
-import ViewTransport from './components/Parent/ViewTransport';
+import SendMessageParent from './components/Parent/SendMessage';
+import ViewEventsParent from './components/Parent/ViewEvents';
+import ViewMarksParent from './components/Parent/ViewMarks';
+import ViewSubjectsParent from './components/Parent/ViewSubjects';
+import ViewTeachersParent from './components/Parent/ViewTeachers';
+import ViewAttendanceParent from './components/Parent/ViewAttendance';
+
+// Student Management Components
+import SendMessageStudent from './components/Student/SendMessage';
+import ViewEventsStudent from './components/Student/ViewEvents';
+import ViewMarksStudent from './components/Student/ViewMarks';
+import ViewSubjectsStudent from './components/Student/ViewSubjects';
+import ViewTeachersStudent from './components/Student/ViewTeachers';
+import ViewAttendanceStudent from './components/Student/ViewAttendance';
 
 // Admin-specific Components
 import SendMessageAdmin from './components/Admin/SendMessage';
@@ -99,12 +105,8 @@ const App = () => {
           <Route path="/admin/add-teacher" element={renderProtectedRoute("admin", AddTeacher)} />
           <Route path="/admin/edit-teacher/:id" element={renderProtectedRoute("admin", EditTeacher)} />
           <Route path="/admin/send-message" element={renderProtectedRoute("admin", SendMessageAdmin)} />
-
-          {/* Updated Routes for Add/Edit Parent */}
           <Route path="/admin/add-parent" element={renderProtectedRoute("admin", AddParentForm)} />
           <Route path="/admin/edit-parent/:id" element={renderProtectedRoute("admin", EditParentForm)} />
-
-          {/* Routes for Editing and Deleting Students */}
           <Route path="/admin/edit-student/:id" element={renderProtectedRoute("admin", EditStudentForm)} />
           <Route path="/teacher/edit-attendance/:id" element={renderProtectedRoute("teacher", EditAttendance)} />
           <Route path="/teacher/add-attendance" element={renderProtectedRoute("teacher", AddAttendance)} />
@@ -117,23 +119,28 @@ const App = () => {
           <Route path="/teacher/manage-attendance" element={renderProtectedRoute("teacher", ManageAttendance)} />
           <Route path="/teacher/manage-classes" element={renderProtectedRoute("teacher", ManageClasses)} />
           <Route path="/teacher/manage-exams" element={renderProtectedRoute("teacher", ManageExams)} />
-          
-          {/* Routes for Adding and Editing Marks */}
-          <Route path="/teacher/add-mark" element={renderProtectedRoute("teacher", AddMark)} />  
-          <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} /> 
-          <Route path="/teacher/add-class" element={renderProtectedRoute("teacher", AddClass)} />  
-          <Route path="/teacher/edit-class/:id" element={renderProtectedRoute("teacher", EditClass)} /> 
+          <Route path="/teacher/add-mark" element={renderProtectedRoute("teacher", AddMark)} />
+          <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} />
+          <Route path="/teacher/add-class" element={renderProtectedRoute("teacher", AddClass)} />
+          <Route path="/teacher/edit-class/:id" element={renderProtectedRoute("teacher", EditClass)} />
 
           {/* Protected Routes for Parent */}
           <Route path="/parent/dashboard" element={renderProtectedRoute("parent", ParentDashboard)} />
           <Route path="/parent/send-message" element={renderProtectedRoute("parent", SendMessageParent)} />
-          <Route path="/parent/view-attendance" element={renderProtectedRoute("parent", ViewAttendance)} />
-          <Route path="/parent/view-events" element={renderProtectedRoute("parent", ViewEvents)} />
-          <Route path="/parent/view-marks" element={renderProtectedRoute("parent", ViewMarks)} />
-          <Route path="/parent/view-routines" element={renderProtectedRoute("parent", ViewRoutines)} />
-          <Route path="/parent/view-subjects" element={renderProtectedRoute("parent", ViewSubjects)} />
-          <Route path="/parent/view-teachers" element={renderProtectedRoute("parent", ViewTeachers)} />
-          <Route path="/parent/view-transport" element={renderProtectedRoute("parent", ViewTransport)} />
+          <Route path="/parent/view-attendance" element={renderProtectedRoute("parent", ViewAttendanceParent)} />
+          <Route path="/parent/view-events" element={renderProtectedRoute("parent", ViewEventsParent)} />
+          <Route path="/parent/view-marks" element={renderProtectedRoute("parent", ViewMarksParent)} />
+          <Route path="/parent/view-subjects" element={renderProtectedRoute("parent", ViewSubjectsParent)} />
+          <Route path="/parent/view-teachers" element={renderProtectedRoute("parent", ViewTeachersParent)} />
+
+          {/* Protected Routes for Student */}
+          <Route path="/student/dashboard" element={renderProtectedRoute("student", StudentDashboard)} />
+          <Route path="/student/send-message" element={renderProtectedRoute("student", SendMessageStudent)} />
+          <Route path="/student/view-attendance" element={renderProtectedRoute("student", ViewAttendanceStudent)} />
+          <Route path="/student/view-events" element={renderProtectedRoute("student", ViewEventsStudent)} />
+          <Route path="/student/view-marks" element={renderProtectedRoute("student", ViewMarksStudent)} />
+          <Route path="/student/view-subjects" element={renderProtectedRoute("student", ViewSubjectsStudent)} />
+          <Route path="/student/view-teachers" element={renderProtectedRoute("student", ViewTeachersStudent)} />
 
           {/* Fallback Route for 404 */}
           <Route path="*" element={<div style={{ textAlign: 'center', marginTop: '50px' }}><h1>404</h1><p>Page Not Found</p></div>} />

@@ -116,12 +116,11 @@ const AddClass = () => {
       </div>
       <div>
         <Input
-          type="text"
+          type="time"
           name="time"
           placeholder="Time"
           value={classData.time}
           onChange={handleChange}
-          type="time"
           required
         />
       </div>

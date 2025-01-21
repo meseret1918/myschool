@@ -128,7 +128,7 @@ const ViewTeachers = () => {
   };
 
   const goBack = () => {
-    navigate('/Parent/Dashboard');
+    navigate('/Student/Dashboard');
   };
 
   return (

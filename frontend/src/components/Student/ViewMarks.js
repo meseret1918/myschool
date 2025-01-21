@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import styled from 'styled-components';
@@ -40,8 +40,25 @@ const StyledTable = styled.table`
     width: 5%;
   }
 
+  th:nth-child(2), td:nth-child(2) {
+    width: 15%;
+    text-align: left;
+  }
+
   th:nth-child(3), td:nth-child(3) {
-    width: 20%;
+    width: 10%;
+  }
+
+  th:nth-child(4), td:nth-child(4) {
+    width: 15%;
+  }
+
+  th:nth-child(5), td:nth-child(5) {
+    width: 10%;
+  }
+
+  th:nth-child(6), td:nth-child(6) {
+    width: 10%;
   }
 `;
 
@@ -72,33 +89,27 @@ const GoBackLink = styled.a`
   }
 `;
 
-const SearchInput = styled.input`
-  padding: 10px;
-  width: 200px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-`;
-
-const ViewTeachers = () => {
-  const [teachers, setTeachers] = useState([]);
-  const [filteredTeachers, setFilteredTeachers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+const ViewMarks = () => {
+  const [marks, setMarks] = useState([]);
+  const [filteredMarks, setFilteredMarks] = useState([]);
+  const [searchId, setSearchId] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [flashMessage, setFlashMessage] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTeachers = async () => {
+    const fetchMarks = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/teachers');
+        const response = await fetch('http://localhost:5000/api/marks');
         if (!response.ok) {
-          throw new Error('Error fetching teachers');
+          const errorDetails = await response.text();
+          throw new Error(`Error fetching marks: ${response.status} - ${errorDetails}`);
         }
         const data = await response.json();
-        setTeachers(data);
-        setFilteredTeachers(data); // Initially display all teachers
+        setMarks(data);
+        setFilteredMarks(data); // Initially display all marks
       } catch (error) {
         setError(error.message);
         setFlashMessage({ type: 'error', message: error.message });
@@ -107,28 +118,24 @@ const ViewTeachers = () => {
       }
     };
 
-    fetchTeachers();
+    fetchMarks();
   }, []);
 
-  // Handle search query change
+  // Search functionality
   const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
+    const searchId = e.target.value;
+    setSearchId(searchId);
 
-    // Filter teachers by their name (FirstName + LastName)
-    if (query) {
-      const filtered = teachers.filter(
-        (teacher) =>
-          `${teacher.FirstName} ${teacher.LastName}`.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredTeachers(filtered);
+    if (searchId) {
+      const filtered = marks.filter((mark) => mark.student_id.toString().includes(searchId));
+      setFilteredMarks(filtered);
     } else {
-      setFilteredTeachers(teachers); // Reset to all teachers if search query is cleared
+      setFilteredMarks(marks); // Reset if search is cleared
     }
   };
 
   const goBack = () => {
-    navigate('/Parent/Dashboard');
+    navigate('/Student/Dashboard');
   };
 
   return (
@@ -140,16 +147,16 @@ const ViewTeachers = () => {
       </Box>
 
       <Box my={2} textAlign="center">
-        <h2>View Teachers</h2>
+        <h2>View Marks</h2>
       </Box>
 
-      {/* Search bar aligned to the right */}
-      <Box my={2} display="flex" justifyContent="flex-end">
-        <SearchInput
+      <Box my={2} display="flex" justifyContent="flex-end"> {/* Align search to the right */}
+        <input
           type="text"
-          placeholder="Search by Name"
-          value={searchQuery}
+          placeholder="Search by Student ID"
+          value={searchId}
           onChange={handleSearchChange}
+          style={{ padding: '10px', width: '200px' }}
         />
       </Box>
 
@@ -163,38 +170,30 @@ const ViewTeachers = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : filteredTeachers.length === 0 ? (
-        <p>No teachers found</p>
+      ) : filteredMarks.length === 0 ? (
+        <p>No marks found</p>
       ) : (
         <TableContainer>
           <StyledTable>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Gender</th>
-                <th>Contact Number</th>
-                <th>Qualification</th>
-                <th>Experience (Years)</th>
-                <th>Hire Date</th>
-                <th>Subjects Taught</th>
-                <th>Salary</th>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Exam Type</th>
+                <th>Date</th>
+                <th>Student ID</th>
               </tr>
             </thead>
             <tbody>
-              {filteredTeachers.map((teacher, index) => (
-                <tr key={teacher.TeacherID}>
+              {filteredMarks.map((mark, index) => (
+                <tr key={mark.id}>
                   <td>{index + 1}</td>
-                  <td>{`${teacher.FirstName} ${teacher.LastName}`}</td>
-                  <td>{teacher.Email}</td>
-                  <td>{teacher.Gender}</td>
-                  <td>{teacher.ContactNumber}</td>
-                  <td>{teacher.Qualification}</td>
-                  <td>{teacher.ExperienceYears}</td>
-                  <td>{teacher.HireDate}</td>
-                  <td>{teacher.SubjectsTaught}</td>
-                  <td>{teacher.Salary}</td>
+                  <td>{mark.subject}</td>
+                  <td>{mark.marks}</td>
+                  <td>{mark.exam_type}</td>
+                  <td>{new Date(mark.date).toLocaleDateString()}</td>
+                  <td>{mark.student_id}</td>
                 </tr>
               ))}
             </tbody>
@@ -205,4 +204,4 @@ const ViewTeachers = () => {
   );
 };
 
-export default ViewTeachers;
+export default ViewMarks;

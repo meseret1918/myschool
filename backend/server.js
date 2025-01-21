@@ -36,6 +36,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const marksRoutes = require('./routes/marksRoutes');
 const classRoutes = require('./routes/classRoutes');
+const subjectsRoutes = require('./routes/subjectsRoutes');
 
 // Define API routes
 app.use('/api/auth', authRoutes);
@@ -48,7 +49,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/marks', marksRoutes);
 app.use('/api/classes', classRoutes);
-
+app.use('/api/subjects', subjectsRoutes);
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));

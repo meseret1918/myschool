@@ -16,7 +16,8 @@ const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
 
-  th, td {
+  th,
+  td {
     padding: 8px 12px;
     text-align: center;
     border: 1px solid #e0e0e0;
@@ -36,12 +37,26 @@ const StyledTable = styled.table`
     background-color: #f1f1f1;
   }
 
-  th:nth-child(1), td:nth-child(1) {
+  th:nth-child(1),
+  td:nth-child(1) {
     width: 5%;
   }
 
-  th:nth-child(3), td:nth-child(3) {
-    width: 20%;
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 15%;
+    text-align: left;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 40%;
+    text-align: justify;
+  }
+
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 10%;
   }
 `;
 
@@ -77,11 +92,12 @@ const SearchInput = styled.input`
   width: 200px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  margin-bottom: 20px;
 `;
 
-const ViewTeachers = () => {
-  const [teachers, setTeachers] = useState([]);
-  const [filteredTeachers, setFilteredTeachers] = useState([]);
+const ViewEvents = () => {
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,16 +105,17 @@ const ViewTeachers = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTeachers = async () => {
+    const fetchEvents = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/teachers');
+        const response = await fetch('http://localhost:5000/api/events');
         if (!response.ok) {
-          throw new Error('Error fetching teachers');
+          const errorDetails = await response.text();
+          throw new Error(`Error fetching events: ${response.status} - ${errorDetails}`);
         }
         const data = await response.json();
-        setTeachers(data);
-        setFilteredTeachers(data); // Initially display all teachers
+        setEvents(data);
+        setFilteredEvents(data); // Initially display all events
       } catch (error) {
         setError(error.message);
         setFlashMessage({ type: 'error', message: error.message });
@@ -107,7 +124,7 @@ const ViewTeachers = () => {
       }
     };
 
-    fetchTeachers();
+    fetchEvents();
   }, []);
 
   // Handle search query change
@@ -115,20 +132,21 @@ const ViewTeachers = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    // Filter teachers by their name (FirstName + LastName)
+    // Filter events by title or description
     if (query) {
-      const filtered = teachers.filter(
-        (teacher) =>
-          `${teacher.FirstName} ${teacher.LastName}`.toLowerCase().includes(query.toLowerCase())
+      const filtered = events.filter(
+        (event) =>
+          event.title.toLowerCase().includes(query.toLowerCase()) ||
+          event.description.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredTeachers(filtered);
+      setFilteredEvents(filtered);
     } else {
-      setFilteredTeachers(teachers); // Reset to all teachers if search query is cleared
+      setFilteredEvents(events); // Reset to all events if search query is cleared
     }
   };
 
   const goBack = () => {
-    navigate('/Parent/Dashboard');
+    navigate('/Student/Dashboard');
   };
 
   return (
@@ -140,14 +158,14 @@ const ViewTeachers = () => {
       </Box>
 
       <Box my={2} textAlign="center">
-        <h2>View Teachers</h2>
+        <h2>View Events</h2>
       </Box>
 
-      {/* Search bar aligned to the right */}
+      {/* Search bar */}
       <Box my={2} display="flex" justifyContent="flex-end">
         <SearchInput
           type="text"
-          placeholder="Search by Name"
+          placeholder="Search by Title or Description"
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -163,38 +181,26 @@ const ViewTeachers = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : filteredTeachers.length === 0 ? (
-        <p>No teachers found</p>
+      ) : filteredEvents.length === 0 ? (
+        <p>No events found</p>
       ) : (
         <TableContainer>
           <StyledTable>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Gender</th>
-                <th>Contact Number</th>
-                <th>Qualification</th>
-                <th>Experience (Years)</th>
-                <th>Hire Date</th>
-                <th>Subjects Taught</th>
-                <th>Salary</th>
+                <th>Event Title</th>
+                <th>Description</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
-              {filteredTeachers.map((teacher, index) => (
-                <tr key={teacher.TeacherID}>
+              {filteredEvents.map((event, index) => (
+                <tr key={event.id}>
                   <td>{index + 1}</td>
-                  <td>{`${teacher.FirstName} ${teacher.LastName}`}</td>
-                  <td>{teacher.Email}</td>
-                  <td>{teacher.Gender}</td>
-                  <td>{teacher.ContactNumber}</td>
-                  <td>{teacher.Qualification}</td>
-                  <td>{teacher.ExperienceYears}</td>
-                  <td>{teacher.HireDate}</td>
-                  <td>{teacher.SubjectsTaught}</td>
-                  <td>{teacher.Salary}</td>
+                  <td>{event.title}</td>
+                  <td>{event.description}</td>
+                  <td>{new Date(event.date).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -205,4 +211,4 @@ const ViewTeachers = () => {
   );
 };
 
-export default ViewTeachers;
+export default ViewEvents;
