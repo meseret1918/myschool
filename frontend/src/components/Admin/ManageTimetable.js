@@ -38,18 +38,6 @@ const StyledTable = styled.table`
   tr:hover {
     background-color: #f1f1f1;
   }
-
-  th:nth-child(1), td:nth-child(1) {
-    width: 5%;
-  }
-
-  th:nth-child(3), td:nth-child(3) {
-    width: 20%;
-  }
-
-  th:nth-last-child(-n+3), td:nth-last-child(-n+3) {
-    width: 5%; /* Smaller width for Add, Edit, and Delete columns */
-  }
 `;
 
 const FlashMessageContainer = styled.div`
@@ -75,10 +63,10 @@ const IconButton = styled.button`
   cursor: pointer;
   color: ${(props) => props.color || '#007bff'};
   font-size: 20px;
+
   span {
     transition: color 0.3s;
   }
-  text-align: left;
 
   &:hover span {
     color: ${(props) => props.hoverColor || '#0056b3'};
@@ -113,61 +101,62 @@ const GoBackLink = styled.a`
   }
 `;
 
-const ManageParents = () => {
-  const [parents, setParents] = useState([]);
+const ManageTimetable = () => {
+  const [timetables, setTimetables] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
-  const [parentToDelete, setParentToDelete] = useState(null);
+  const [timetableToDelete, setTimetableToDelete] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchParents = async () => {
+    const fetchTimetables = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/parents');
+        const response = await fetch('http://localhost:5000/api/timetable');
         if (!response.ok) {
-          throw new Error('Error fetching parents');
+          throw new Error('Error fetching timetables');
         }
         const data = await response.json();
-        setParents(data);
+        setTimetables(data);
       } catch (error) {
-        setError(error.message || 'Failed to load parents');
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchParents();
+    fetchTimetables();
   }, []);
 
-  const handleDelete = (id) => setParentToDelete(id);
+  const handleDelete = (id) => setTimetableToDelete(id);
 
   const confirmDelete = async () => {
-    if (isDeleting || !parentToDelete) return;
+    if (isDeleting || !timetableToDelete) return;
     setIsDeleting(true);
     setFlashMessage({ type: 'info', message: 'Deleting...' });
 
     try {
-      const response = await fetch(`http://localhost:5000/api/parents/${parentToDelete}`, {
+      const response = await fetch(`http://localhost:5000/api/timetable/${timetableToDelete}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        setFlashMessage({ type: 'success', message: 'Parent deleted successfully!' });
-        setParents(parents.filter((parent) => parent.parent_id !== parentToDelete));
+        setFlashMessage({ type: 'success', message: 'Timetable deleted successfully!' });
+        setTimetables(timetables.filter((timetable) => timetable.id !== timetableToDelete));
       } else {
-        setFlashMessage({ type: 'error', message: 'Error deleting parent' });
+        setFlashMessage({ type: 'error', message: 'Error deleting timetable' });
       }
     } catch (error) {
       setFlashMessage({ type: 'error', message: `Error: ${error.message}` });
     } finally {
       setIsDeleting(false);
-      setParentToDelete(null);
+      setTimetableToDelete(null);
+
       setTimeout(() => setFlashMessage(null), 3000);
     }
   };
 
-  const cancelDelete = () => setParentToDelete(null);
+  const cancelDelete = () => setTimetableToDelete(null);
 
   const goBack = () => {
     navigate('/admin/Dashboard');
@@ -182,7 +171,7 @@ const ManageParents = () => {
       </Box>
 
       <Box my={2} textAlign="center">
-        <h2>Manage Parents</h2>
+        <h2>Manage Timetable</h2>
       </Box>
 
       {flashMessage && (
@@ -195,56 +184,45 @@ const ManageParents = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : parents.length === 0 ? (
-        <p>No parents found</p>
+      ) : timetables.length === 0 ? (
+        <p>No timetables found</p>
       ) : (
         <TableContainer>
           <StyledTable>
             <thead>
               <tr>
-                <th>NO</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
+                <th>No</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Teacher ID</th>
+                <th>Class ID</th>
                 <th>Add</th>
                 <th>Edit</th>
                 <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {parents.map((parent, index) => (
-                <tr key={parent.parent_id}>
+              {timetables.map((timetable, index) => (
+                <tr key={timetable.id}>
                   <td>{index + 1}</td>
-                  <td>{parent.name}</td>
-                  <td>{parent.email}</td>
-                  <td>{parent.phone}</td>
-                  <td>{parent.address || 'N/A'}</td>
+                  <td>{timetable.day}</td>
+                  <td>{`${timetable.start_time} - ${timetable.end_time}`}</td>
+                  <td>{timetable.subject}</td>
+                  <td>{timetable.teacher_id}</td>
+                  <td>{timetable.class_id}</td>
                   <td>
-                    <IconButton
-                      color="#28a745"
-                      hoverColor="#218838"
-                      onClick={() => navigate('/admin/add-parent')}
-                    >
+                    <IconButton color="#28a745" hoverColor="#218838" onClick={() => navigate('/admin/add-timetable')}>
                       <AddCircleOutlineIcon />
                     </IconButton>
                   </td>
                   <td>
-                    <IconButton
-                      color="#ffc107"
-                      hoverColor="#e0a800"
-                      onClick={() => navigate(`/admin/edit-parent/${parent.parent_id}`)}
-                    >
+                    <IconButton color="#ffc107" hoverColor="#e0a800" onClick={() => navigate(`/admin/edit-timetable/${timetable.id}`)}>
                       <EditIcon />
                     </IconButton>
                   </td>
                   <td>
-                    <IconButton
-                      color="#dc3545"
-                      hoverColor="#c82333"
-                      onClick={() => handleDelete(parent.parent_id)}
-                      disabled={isDeleting}
-                    >
+                    <IconButton color="#dc3545" hoverColor="#c82333" onClick={() => handleDelete(timetable.id)} disabled={isDeleting}>
                       <DeleteIcon />
                     </IconButton>
                   </td>
@@ -255,9 +233,9 @@ const ManageParents = () => {
         </TableContainer>
       )}
 
-      {parentToDelete && (
+      {timetableToDelete && (
         <DeleteDialog>
-          <p>Are you sure you want to delete this parent?</p>
+          <p>Are you sure you want to delete this timetable?</p>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <IconButton color="#dc3545" hoverColor="#c82333" onClick={confirmDelete}>
               Yes
@@ -272,4 +250,4 @@ const ManageParents = () => {
   );
 };
 
-export default ManageParents;
+export default ManageTimetable;

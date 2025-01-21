@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const messageController = require('../controllers/messageController');
-const authMiddleware = require('../utils/authMiddleware');
 
-// Send a new message
-router.post('/', authMiddleware.verifyAuthenticated, messageController.sendMessage);
+// POST: Send a new message
+router.post('/messages', messageController.sendMessage);
 
-// Get all messages for a user
-router.get('/:userId', authMiddleware.verifyAuthenticated, messageController.getMessages);
+// GET: Get messages for a specific user
+router.get('/messages/:userId', messageController.getMessages);
 
-// Delete a message
-router.delete('/:messageId', authMiddleware.verifyAdmin, messageController.deleteMessage);
+// DELETE: Delete a message by ID
+router.delete('/messages/:messageId', messageController.deleteMessage);
 
 module.exports = router;

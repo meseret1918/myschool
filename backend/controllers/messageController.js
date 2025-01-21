@@ -1,69 +1,87 @@
+const { Sequelize } = require('sequelize');
 const Message = require('../models/Message');
-const User = require('../models/User'); // Assuming you have a User model for reference
+const User = require('../models/User');
 
-// Create a new message
+// Send a new message
 exports.sendMessage = async (req, res) => {
-    const { senderId, receiverId, content } = req.body;
+  const { senderId, recipient, message, recipientRole } = req.body;
 
-    // Input validation
-    if (!senderId || !receiverId || !content) {
-        return res.status(400).json({ message: 'Sender, receiver, and content are required' });
+  if (!senderId || !recipient || !message || !recipientRole) {
+    return res.status(400).json({ message: 'Sender, recipient, message content, and recipient role are required' });
+  }
+
+  try {
+    const sender = await User.findByPk(senderId);
+    const receiver = await User.findOne({ where: { id: recipient } });
+
+    if (!sender) {
+      console.error(`Sender with ID ${senderId} not found`);
+      return res.status(404).json({ message: 'Sender not found' });
     }
 
-    try {
-        // Optionally: Check if both sender and receiver exist in the database
-        const sender = await User.findById(senderId);
-        const receiver = await User.findById(receiverId);
-        
-        if (!sender || !receiver) {
-            return res.status(404).json({ message: 'Sender or receiver not found' });
-        }
-
-        const message = new Message({ senderId, receiverId, content });
-        await message.save();
-        res.status(201).json({ message: 'Message sent successfully', message });
-    } catch (err) {
-        console.error(err); // Log error for debugging
-        res.status(500).json({ message: 'Error sending message' });
+    if (!receiver) {
+      console.error(`Recipient with ID ${recipient} not found`);
+      return res.status(404).json({ message: 'Recipient not found' });
     }
+
+    const newMessage = await Message.create({
+      senderId: sender.id,
+      recipientId: receiver.id,
+      recipientRole,
+      content: message,
+    });
+
+    res.status(201).json({ message: 'Message sent successfully', data: newMessage });
+  } catch (err) {
+    console.error('Error while sending message:', err);
+    res.status(500).json({ message: 'Error sending message', error: err.message });
+  }
 };
 
 // Get all messages for a user
 exports.getMessages = async (req, res) => {
-    const { userId } = req.params;
+  const userId = req.params.userId;
 
-    try {
-        const messages = await Message.find({ $or: [{ senderId: userId }, { receiverId: userId }] });
-        if (messages.length === 0) {
-            return res.status(404).json({ message: 'No messages found for this user' });
-        }
-        res.status(200).json(messages);
-    } catch (err) {
-        console.error(err); // Log error for debugging
-        res.status(500).json({ message: 'Error fetching messages' });
+  try {
+    const messages = await Message.findAll({
+      where: {
+        [Sequelize.Op.or]: [
+          { senderId: userId },
+          { recipientId: userId },
+        ],
+      },
+      include: [
+        { model: User, as: 'sender', attributes: ['id', 'username', 'email'] },
+        { model: User, as: 'recipient', attributes: ['id', 'username', 'email'] }
+      ],
+    });
+
+    if (messages.length === 0) {
+      return res.status(404).json({ message: 'No messages found' });
     }
+
+    res.status(200).json({ data: messages });
+  } catch (err) {
+    console.error('Error while fetching messages:', err);
+    res.status(500).json({ message: 'Error fetching messages', error: err.message });
+  }
 };
 
 // Delete a message
 exports.deleteMessage = async (req, res) => {
-    const { messageId } = req.params;
+  const { messageId } = req.params;
 
-    try {
-        const message = await Message.findById(messageId);
-        if (!message) {
-            return res.status(404).json({ message: 'Message not found' });
-        }
+  try {
+    const message = await Message.findByPk(messageId);
 
-        // Authorization: Ensure the logged-in user is the sender or an admin
-        if (req.user.id !== message.senderId && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'You do not have permission to delete this message' });
-        }
-
-        // Delete the message
-        await message.remove();
-        res.status(200).json({ message: 'Message deleted successfully' });
-    } catch (err) {
-        console.error(err); // Log error for debugging
-        res.status(500).json({ message: 'Error deleting message' });
+    if (!message) {
+      return res.status(404).json({ message: 'Message not found' });
     }
+
+    await message.destroy();
+    res.status(200).json({ message: 'Message deleted successfully' });
+  } catch (err) {
+    console.error('Error while deleting message:', err);
+    res.status(500).json({ message: 'Error deleting message', error: err.message });
+  }
 };

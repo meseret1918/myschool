@@ -48,7 +48,7 @@ const Header = ({ isAuthenticated, role }) => {
 // Define styles in an object to improve readability
 const styles = {
   headerContainer: {
-    backgroundColor: "#008000", // LightPurple color
+    backgroundColor: "#c0", // LightPurple color
     padding: "4px 8px", // Adjusted padding for visual clarity
     display: "flex",
     alignItems: "center",

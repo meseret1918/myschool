@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 
 const SendMessage = () => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [recipientId, setRecipientId] = useState('');
   const [recipientRole, setRecipientRole] = useState('');
@@ -13,23 +25,37 @@ const SendMessage = () => {
     setSuccess(null);
     setError(null);
 
-    // Replace with actual sender_id from session or local storage
-    const senderId = JSON.parse(localStorage.getItem('user'))?.id;
+    const senderId = JSON.parse(localStorage.getItem('user'))?.id; // Retrieve sender ID from local storage
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
 
     if (!senderId) {
       setError('Sender ID not found. Please log in.');
       return;
     }
 
+    if (!token) {
+      setError('No token provided. Please log in again.');
+      return;
+    }
+
     try {
-      const response = await fetch('/http://localhost:5000/api/messages', {
+      const response = await fetch('http://localhost:5000/api/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender_id: senderId, recipient_id: recipientId, recipient_role: recipientRole, message }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Add token to the request headers
+        },
+        body: JSON.stringify({
+          sender_id: senderId,
+          recipient_id: recipientId || null, // Use null if recipientId is empty
+          recipient_role: recipientRole,
+          message,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        const errorDetails = await response.text();
+        throw new Error(`Failed to send message: ${errorDetails}`);
       }
 
       setSuccess('Message sent successfully');
@@ -91,7 +117,7 @@ const SendMessage = () => {
                 variant="outlined"
                 value={recipientId}
                 onChange={(e) => setRecipientId(e.target.value)}
-                required
+                placeholder="Enter Recipient ID (optional)"
               />
             </Grid>
             <Grid item xs={12}>
@@ -120,7 +146,7 @@ const SendMessage = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Button
                 type="submit"
                 variant="contained"
@@ -131,6 +157,20 @@ const SendMessage = () => {
                 }}
               >
                 Send
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                type="button"
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: '#f44336',
+                  ':hover': { backgroundColor: '#d32f2f' },
+                }}
+                onClick={() => navigate(-1)}
+              >
+                Cancel
               </Button>
             </Grid>
           </Grid>

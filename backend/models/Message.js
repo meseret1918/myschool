@@ -1,57 +1,46 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-// Define the Message model
 const Message = sequelize.define('Message', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    senderId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users', // Matches the table name in the User model
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    },
-    recipientId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users', // Matches the table name in the User model
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    },
-    recipientRole: {
-        type: DataTypes.ENUM('student', 'teacher', 'parent', 'admin'),
-        allowNull: false,
-    },
-    message: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        validate: {
-            notEmpty: { msg: 'Message content cannot be empty' },
-        },
-    },
-    sentAt: {
-        type: DataTypes.DATE,
-        defaultValue: Sequelize.NOW,
-    },
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  senderId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'sender_id',
+  },
+  recipientId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'recipient_id',
+  },
+  recipientRole: {
+    type: DataTypes.ENUM('student', 'teacher', 'parent', 'admin'),
+    allowNull: false,
+    field: 'recipient_role',
+  },
+  content: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    field: 'message',
+  },
+  sentAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'sent_at',
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  },
 }, {
-    tableName: 'messages',
-    timestamps: false,
+  timestamps: false,
+  tableName: 'messages',
 });
 
-// Define associations
 Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
-    Message.belongsTo(models.User, { foreignKey: 'recipientId', as: 'recipient' });
+  Message.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
+  Message.belongsTo(models.User, { foreignKey: 'recipientId', as: 'recipient' });
 };
 
 module.exports = Message;

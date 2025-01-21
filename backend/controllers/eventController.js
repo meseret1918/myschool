@@ -1,12 +1,12 @@
-const Event = require('./models/event');  // Updated model import
+const Timetable = require('./models/timetable');  // Updated model import
 
-exports.getAllEvents = async (req, res) => {
+exports.getAllTimetables = async (req, res) => {
     try {
-        const events = await Event.findAll();  // Changed to fetch events from the database
-        console.log('Fetched Events:', events);  // Added for debugging, can be removed in production
-        res.status(200).json(events);  // Send the events as a response to the client
+        const timetables = await Timetable.findAll();  // Changed to fetch timetables from the database
+        console.log('Fetched Timetables:', timetables);  // Added for debugging, can be removed in production
+        res.status(200).json(timetables);  // Send the timetables as a response to the client
     } catch (error) {
-        console.error('Error fetching events:', error);  // Updated error message for better debugging
-        res.status(500).json({ message: 'Error fetching events. Please try again later.' });
+        console.error('Error fetching timetables:', error);  // Updated error message for better debugging
+        res.status(500).json({ message: 'Error fetching timetables. Please try again later.' });
     }
 };

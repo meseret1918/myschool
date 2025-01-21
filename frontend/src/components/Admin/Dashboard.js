@@ -1,6 +1,7 @@
+// src/components/Admin/Dashboard.js
 import React, { useState, useEffect } from 'react';
+import { Box, Typography, Grid, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Button, Grid } from '@mui/material';
 
 // Function to fetch dashboard data
 const fetchDashboardData = async (setCounts, setLoading, setError) => {
@@ -12,8 +13,23 @@ const fetchDashboardData = async (setCounts, setLoading, setError) => {
       throw new Error('Failed to fetch dashboard data');
     }
 
-    const { totalTeachers, totalStudents, totalParents } = await response.json();
-    setCounts({ totalTeachers, totalStudents, totalParents });
+    const { 
+      totalTeachers, 
+      totalStudents, 
+      totalParents, 
+      parentsWithMultipleStudents,
+      totalClasses,  // Added totalClasses
+      totalSubjects  // Added totalSubjects
+    } = await response.json();
+
+    setCounts({ 
+      totalTeachers, 
+      totalStudents, 
+      totalParents, 
+      parentsWithMultipleStudents,
+      totalClasses,  // Set totalClasses
+      totalSubjects  // Set totalSubjects
+    });
   } catch (err) {
     setError(err.message || 'An error occurred while fetching data');
   } finally {
@@ -41,27 +57,27 @@ const StatsCard = ({ title, value }) => (
   </Box>
 );
 
-// Navigation Links
+// DashboardLinks component (Define it here)
 const DashboardLinks = () => (
   <Box sx={{ marginTop: 2 }}>
-    {[
-      { path: '/admin/manage-students', label: 'Manage Students' },
+    {[{ path: '/admin/manage-students', label: 'Manage Students' },
       { path: '/admin/manage-teachers', label: 'Manage Teachers' },
       { path: '/admin/manage-parents', label: 'Manage Parents' },
       { path: '/admin/manage-events', label: 'Manage Events' },
-      { path: '/admin/send-message', label: 'Send Message' },
-    ].map((link, index) => (
-      <Typography key={index} sx={{ marginY: 1 }}>
-        <Link to={link.path} style={{ textDecoration: 'none', color: '#007bff' }}>
-          {link.label}
-        </Link>
-      </Typography>
+      { path: '/admin/manage-fee', label: 'Manage Fee' },
+      { path: '/admin/manage-timetable', label: 'Manage Timetable' },
+      { path: '/admin/send-message', label: 'Send Message' }].map((link, index) => (
+        <Typography key={index} sx={{ marginY: 1 }}>
+          <Link to={link.path} style={{ textDecoration: 'none', color: '#007bff' }}>
+            {link.label}
+          </Link>
+        </Typography>
     ))}
   </Box>
 );
 
 const AdminDashboard = () => {
-  const [counts, setCounts] = useState({ totalTeachers: 0, totalStudents: 0, totalParents: 0 });
+  const [counts, setCounts] = useState({ totalTeachers: 0, totalStudents: 0, totalParents: 0, parentsWithMultipleStudents: 0, totalClasses: 0, totalSubjects: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showResources, setShowResources] = useState(false);
@@ -110,6 +126,10 @@ const AdminDashboard = () => {
           <StatsCard title="Total Teachers" value={counts.totalTeachers} />
           <StatsCard title="Total Students" value={counts.totalStudents} />
           <StatsCard title="Total Parents" value={counts.totalParents} />
+          <StatsCard title="Parents with Multiple Students" value={counts.parentsWithMultipleStudents} />
+          {/* Add Total Classes and Total Subjects */}
+          <StatsCard title="Total Classes" value={counts.totalClasses} />
+          <StatsCard title="Total Subjects" value={counts.totalSubjects} />
         </Grid>
 
         {/* Right Side - Manage Resources */}
@@ -155,4 +175,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminDashboard; // Ensure this is the default export

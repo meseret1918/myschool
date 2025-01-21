@@ -38,6 +38,8 @@ const marksRoutes = require('./routes/marksRoutes');
 const classRoutes = require('./routes/classRoutes');
 const subjectsRoutes = require('./routes/subjectsRoutes');
 
+const timetableRoutes = require('./routes/timetableRoutes');
+
 // Define API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
@@ -50,6 +52,8 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/marks', marksRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/subjects', subjectsRoutes);
+app.use('/api/timetable', timetableRoutes);
+
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
