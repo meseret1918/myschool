@@ -35,6 +35,9 @@ import ManageTimetable from './components/Admin/ManageTimetable';
 import AddTimetable from './components/Admin/AddTimetable';
 import EditTimetable from './components/Admin/EditTimetable';
 
+import AddFee from './components/Admin/AddFee';
+import EditFee from './components/Admin/EditFee';
+
 
 // Teacher Management Components
 import ManageMarks from './components/Teacher/ManageMarks';
@@ -117,6 +120,8 @@ const App = () => {
           <Route path="/teacher/add-attendance" element={renderProtectedRoute("teacher", AddAttendance)} />
 
           <Route path="/admin/manage-fee" element={renderProtectedRoute("admin", ManageFee)} />
+          <Route path="/admin/add-fee" element={renderProtectedRoute("admin", AddFee)} />
+          <Route path="/admin/edit-fee/:id" element={renderProtectedRoute("admin", EditFee)} />
           <Route path="/admin/manage-timetable" element={renderProtectedRoute("admin", ManageTimetable)} />
           <Route path="/admin/add-timetable" element={renderProtectedRoute("admin", AddTimetable)} />
           <Route path="/admin/edit-timetable/:id" element={renderProtectedRoute("admin", EditTimetable)} />
