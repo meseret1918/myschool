@@ -52,7 +52,7 @@ router.get('/:id', async (req, res) => {
                 return res.status(404).json({ error: 'Event not found' });
             }
 
-            res.json(results[0]); // Return the first matching event
+            res.json(results[0]); 
         });
     } catch (err) {
         console.error(err);
