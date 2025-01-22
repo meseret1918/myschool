@@ -29,12 +29,12 @@ const Subject = sequelize.define('Subject', {
     },
     createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // Automatically sets the current timestamp
+        defaultValue: DataTypes.NOW, 
         allowNull: false
     },
     updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // Automatically sets the current timestamp
+        defaultValue: DataTypes.NOW, 
         allowNull: false
     },
     teacherId: {
@@ -43,7 +43,7 @@ const Subject = sequelize.define('Subject', {
     }
 }, {
     tableName: 'subjects',
-    timestamps: true // If your table handles timestamps for createdAt and updatedAt
+    timestamps: true 
 });
 
 module.exports = Subject;
