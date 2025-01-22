@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Subject = require('../models/Subject');  // Assuming you have a Subject model
+const Subject = require('../models/Subject');  
 
 // Get all subjects
 router.get('/', async (req, res) => {
     try {
-        const subjects = await Subject.findAll();  // Get all subjects
+        const subjects = await Subject.findAll();  
         res.status(200).json(subjects);
     } catch (error) {
         console.error('Error fetching subjects:', error);
