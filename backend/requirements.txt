@@ -1,3 +1,4 @@
+# Python dependencies in requirements.txt
 Flask
 Flask-SQLAlchemy
 Flask-JWT-Extended
