@@ -8,7 +8,7 @@ const Parent = sequelize.define('Parent', {
         autoIncrement: true,
     },
     name: {
-        type: DataTypes.STRING(100),  // Added length limit for name
+        type: DataTypes.STRING(100),  
         allowNull: false,
         validate: {
             notEmpty: {
@@ -21,11 +21,11 @@ const Parent = sequelize.define('Parent', {
         }
     },
     phone: {
-        type: DataTypes.STRING(15),  // Ensure phone is stored within reasonable length
+        type: DataTypes.STRING(15),  
         allowNull: true,
         validate: {
             len: {
-                args: [10, 15],  // Phone should be at least 10 digits long (could adjust based on region)
+                args: [10, 15], 
                 msg: 'Phone number should be between 10 and 15 characters'
             }
         }
@@ -50,8 +50,8 @@ const Parent = sequelize.define('Parent', {
         allowNull: true,
     }
 }, {
-    tableName: 'parents',  // Ensure that the table name matches the database
-    timestamps: false,     // Disable automatic timestamp fields
+    tableName: 'parents',
+    timestamps: false,     
 });
 
 module.exports = Parent;
