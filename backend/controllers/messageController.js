@@ -64,7 +64,6 @@ exports.getMessages = async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages', error: error.message });
   }
 };
-
 // Delete a message
 exports.deleteMessage = async (req, res) => {
   const { messageId } = req.params;
