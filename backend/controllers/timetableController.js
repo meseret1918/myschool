@@ -87,7 +87,6 @@ exports.updateTimetable = async (req, res) => {
         res.status(500).json({ error: 'Error updating timetable' });
     }
 };
-
 // Delete a timetable
 exports.deleteTimetable = async (req, res) => {
     try {
