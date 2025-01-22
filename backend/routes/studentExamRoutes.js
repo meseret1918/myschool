@@ -3,7 +3,7 @@ const router = express.Router();
 const examController = require('../controllers/studentExamController');
 
 // Route to get all exams
-router.get('/exam', examController.getAllExams);  // Updated route
+router.get('/exam', examController.getAllExams);  
 
 // Other routes
 router.get('/exam/:id', examController.getExamById);
