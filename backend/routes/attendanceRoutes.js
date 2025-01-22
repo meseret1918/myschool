@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const attendanceController = require('../controllers/attendanceController');
 
+
 // Define routes
 router.get('/', attendanceController.getAllAttendance);
 router.get('/:id', attendanceController.getAttendanceById);
