@@ -25,7 +25,6 @@ exports.getExamById = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch exam' });
     }
 };
-
 // Create a new exam
 exports.createExam = async (req, res) => {
     const { index_number, grade_id, exam_id, subject_id, marks, year, date } = req.body;
