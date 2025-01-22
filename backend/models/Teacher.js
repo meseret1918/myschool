@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Your Sequelize configuration
+const sequelize = require('../config/db'); 
 
 const Teacher = sequelize.define('Teacher', {
     TeacherID: {
@@ -91,7 +91,7 @@ const Teacher = sequelize.define('Teacher', {
     },
 }, {
     tableName: 'teachers',
-    timestamps: false, // Since created_at and updated_at are not in your table
+    timestamps: false, 
 });
 
 module.exports = Teacher;
