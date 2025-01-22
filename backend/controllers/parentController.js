@@ -16,7 +16,7 @@ exports.getAllParents = async (req, res) => {
         // Send the fetched parents as a response
         res.status(200).json(parents);
     } catch (error) {
-        console.error('Error fetching parents:', error.message); // Log the error message for debugging
+        console.error('Error fetching parents:', error.message); 
 
         // Send error response with detailed message
         res.status(500).json({
