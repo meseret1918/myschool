@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Grid, Box, Typography, Paper, TextField, IconButton, InputAdornment } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import bgpic from '../../assets/admin.jpg';
+import bgpic from '../../images/admin.jpg';
 import { LightPurpleButton } from '../buttonStyles';
 import styled from 'styled-components';
 import axios from 'axios'; // Import axios for making API requests
@@ -108,7 +108,7 @@ const Login = () => {
     button: {
       width: '100%',
       padding: '10px',
-      backgroundColor: '#007bff',
+      backgroundColor: '#9C33FF',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,30 +33,6 @@ const StyledTable = styled.table`
   }
   tr:hover {
     background-color: #f1f1f1;
-  }
-  th:nth-child(1), td:nth-child(1) {
-    width: 5%;
-  }
-  th:nth-child(2), td:nth-child(2) {
-    width: 15%;
-  }
-  th:nth-child(3), td:nth-child(3) {
-    width: 15%;
-  }
-  th:nth-child(4), td:nth-child(4) {
-    width: 10%;
-  }
-  th:nth-child(5), td:nth-child(5) {
-    width: 10%;
-  }
-  th:nth-child(6), td:nth-child(6) {
-    width: 10%;
-  }
-  th:nth-child(7), td:nth-child(7) {
-    width: 10%;
-  }
-  th:nth-child(8), td:nth-child(8) {
-    width: 10%;
   }
 `;
 
@@ -103,6 +79,7 @@ const ManageAttendance = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -150,6 +127,11 @@ const ManageAttendance = () => {
         }
     };
 
+    // Filter the attendance based on search query
+    const filteredAttendance = attendance.filter((record) =>
+        record.index_number.toString().includes(searchQuery)
+    );
+
     if (loading) {
         return <div>Loading attendance data...</div>;
     }
@@ -161,9 +143,7 @@ const ManageAttendance = () => {
     return (
         <div>
             <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
-                <a href="#" onClick={() => navigate('/teacher/Dashboard')}>
-                    🔙
-                </a>
+                <a href="#" onClick={() => navigate('/teacher/Dashboard')}>🔙</a>
             </Box>
 
             <Box my={2} textAlign="center">
@@ -175,6 +155,24 @@ const ManageAttendance = () => {
                     <FlashMessage type="success">{successMessage}</FlashMessage>
                 </FlashMessageContainer>
             )}
+
+            {/* Search Bar */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginBottom: '20px',
+                    marginTop: '20px',
+                }}
+            >
+                <TextField
+                    variant="outlined"
+                    label="Search by Index Number"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    sx={{ width: '300px' }}
+                />
+            </Box>
 
             <TableContainer>
                 <StyledTable>
@@ -194,7 +192,7 @@ const ManageAttendance = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {attendance.map((record) => (
+                        {filteredAttendance.map((record) => (
                             <tr key={record.id}>
                                 <td>{record.id}</td>
                                 <td>{record.index_number}</td>

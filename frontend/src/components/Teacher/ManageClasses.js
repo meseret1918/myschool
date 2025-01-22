@@ -38,18 +38,24 @@ const StyledTable = styled.table`
     width: 5%;
   }
   th:nth-child(2), td:nth-child(2) {
-    width: 20%;
+    width: 15%;
   }
   th:nth-child(3), td:nth-child(3) {
-    width: 20%;
+    width: 15%;
   }
   th:nth-child(4), td:nth-child(4) {
     width: 15%;
   }
   th:nth-child(5), td:nth-child(5) {
-    width: 10%;
+    width: 15%;
   }
   th:nth-child(6), td:nth-child(6) {
+    width: 10%;
+  }
+  th:nth-child(7), td:nth-child(7) {
+    width: 10%;
+  }
+  th:nth-child(8), td:nth-child(8) {
     width: 10%;
   }
 `;
@@ -90,24 +96,34 @@ const IconButton = styled.button`
   }
 `;
 
-const ManageClasses = () => {
-    const [classes, setClasses] = useState([]);
+const SearchInput = styled.input`
+  padding: 8px;
+  margin: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 300px;
+`;
+
+const ManageExams = () => {
+    const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchClasses = async () => {
+        const fetchExams = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/classes');
+                const response = await fetch('http://localhost:5000/api/Exam');
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch classes data. Status: ${response.status}`);
+                    throw new Error(`Failed to fetch exams data. Status: ${response.status}`);
                 }
                 const data = await response.json();
-                setClasses(data);
+                setExams(data);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -115,7 +131,7 @@ const ManageClasses = () => {
             }
         };
 
-        fetchClasses();
+        fetchExams();
     }, []);
 
     const handleDeleteDialogClose = () => {
@@ -125,12 +141,12 @@ const ManageClasses = () => {
 
     const handleDeleteConfirm = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/classes/${recordToDelete}`, {
+            const response = await fetch(`http://localhost:5000/api/Exam/${recordToDelete}`, {
                 method: 'DELETE',
             });
 
             if (response.ok) {
-                setClasses((prev) => prev.filter((record) => record.id !== recordToDelete));
+                setExams((prev) => prev.filter((record) => record.id !== recordToDelete));
                 setSuccessMessage('Record deleted successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000);
             } else {
@@ -144,8 +160,15 @@ const ManageClasses = () => {
         }
     };
 
+    // Filter exams based on search term
+    const filteredExams = exams.filter((record) =>
+        record.marks.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.year.toString().includes(searchTerm) ||
+        record.exam_id.toString().includes(searchTerm)
+    );
+
     if (loading) {
-        return <div>Loading class data...</div>;
+        return <div>Loading exam data...</div>;
     }
 
     if (error) {
@@ -161,7 +184,7 @@ const ManageClasses = () => {
             </Box>
 
             <Box my={2} textAlign="center">
-                <h2>Manage Classes</h2>
+                <h2>Manage Exams</h2>
             </Box>
 
             {successMessage && (
@@ -170,57 +193,83 @@ const ManageClasses = () => {
                 </FlashMessageContainer>
             )}
 
+            {/* Search bar at the right corner */}
+            <Box textAlign="right" mr={2}>
+                <SearchInput
+                    type="text"
+                    placeholder="Search by Marks, Year or Exam ID"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </Box>
+
             <TableContainer>
                 <StyledTable>
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Class Name</th>
-                            <th>Subject</th>
+                            <th>Index Number</th>
+                            <th>Grade ID</th>
+                            <th>Exam ID</th>
+                            <th>Subject ID</th>
+                            <th>Marks</th>
+                            <th>Year</th>
+                            <th>Date</th>
                             <th>Add</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {classes.map((record) => (
-                            <tr key={record.id}>
-                                <td>{record.id}</td>
-                                <td>{record.class_name}</td>
-                                <td>{record.subject}</td>
-                                <td>
-                                    <Link to="/teacher/add-class">
-                                        <IconButton color="green">
+                        {filteredExams.length > 0 ? (
+                            filteredExams.map((record) => (
+                                <tr key={record.id}>
+                                    <td>{record.id}</td>
+                                    <td>{record.index_number}</td>
+                                    <td>{record.grade_id}</td>
+                                    <td>{record.exam_id}</td>
+                                    <td>{record.subject_id}</td>
+                                    <td>{record.marks}</td>
+                                    <td>{record.year}</td>
+                                    <td>{record.date}</td>
+                                    <td>
+                                        <Link to="/teacher/add-exam">
+                                            <IconButton color="green">
+                                                <span>
+                                                    <AddCircleOutlineIcon />
+                                                </span>
+                                            </IconButton>
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <Link to={`/teacher/edit-exam/${record.id}`}>
+                                            <IconButton color="blue">
+                                                <span>
+                                                    <EditIcon />
+                                                </span>
+                                            </IconButton>
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <IconButton
+                                            onClick={() => {
+                                                setDeleteDialogOpen(true);
+                                                setRecordToDelete(record.id);
+                                            }}
+                                            color="red"
+                                        >
                                             <span>
-                                                <AddCircleOutlineIcon />
+                                                <DeleteIcon />
                                             </span>
                                         </IconButton>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <Link to={`/teacher/edit-class/${record.id}`}>
-                                        <IconButton color="blue">
-                                            <span>
-                                                <EditIcon />
-                                            </span>
-                                        </IconButton>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <IconButton
-                                        onClick={() => {
-                                            setDeleteDialogOpen(true);
-                                            setRecordToDelete(record.id);
-                                        }}
-                                        color="red"
-                                    >
-                                        <span>
-                                            <DeleteIcon />
-                                        </span>
-                                    </IconButton>
-                                </td>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="11">No exams found</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </StyledTable>
             </TableContainer>
@@ -244,4 +293,4 @@ const ManageClasses = () => {
     );
 };
 
-export default ManageClasses;
+export default ManageExams;

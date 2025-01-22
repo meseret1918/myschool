@@ -103,13 +103,25 @@ const GoBackLink = styled.a`
   }
 `;
 
+const SearchBar = styled.input`
+  padding: 8px;
+  margin-left: auto;
+  margin-right: 20px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 200px;
+`;
+
 const ManageMarks = () => {
   const [marks, setMarks] = useState([]);
+  const [filteredMarks, setFilteredMarks] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
   const [markToDelete, setMarkToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,6 +133,7 @@ const ManageMarks = () => {
         }
         const data = await response.json();
         setMarks(data);
+        setFilteredMarks(data); // Initialize filtered marks
       } catch (error) {
         setError(error.message || 'Failed to load marks');
       } finally {
@@ -130,6 +143,17 @@ const ManageMarks = () => {
 
     fetchMarks();
   }, []);
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = marks.filter((mark) =>
+      mark.student_id.toLowerCase().includes(query) ||
+      mark.subject.toLowerCase().includes(query) ||
+      mark.exam_type.toLowerCase().includes(query)
+    );
+    setFilteredMarks(filtered);
+  };
 
   const handleDelete = (id) => setMarkToDelete(id);
 
@@ -145,6 +169,7 @@ const ManageMarks = () => {
       if (response.ok) {
         setFlashMessage({ type: 'success', message: 'Mark deleted successfully!' });
         setMarks(marks.filter((mark) => mark.id !== markToDelete));
+        setFilteredMarks(filteredMarks.filter((mark) => mark.id !== markToDelete));
       } else {
         setFlashMessage({ type: 'error', message: 'Error deleting mark' });
       }
@@ -167,8 +192,14 @@ const ManageMarks = () => {
         </GoBackLink>
       </Box>
 
-      <Box my={2} textAlign="center">
+      <Box my={2} display="flex" justifyContent="center" alignItems="center">
         <h2>Manage Marks</h2>
+        <SearchBar
+          type="text"
+          placeholder="Search by ID, Subject, Exam Type"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
       </Box>
 
       {flashMessage && (
@@ -181,7 +212,7 @@ const ManageMarks = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : marks.length === 0 ? (
+      ) : filteredMarks.length === 0 ? (
         <p>No marks found</p>
       ) : (
         <TableContainer>
@@ -200,7 +231,7 @@ const ManageMarks = () => {
               </tr>
             </thead>
             <tbody>
-              {marks.map((mark, index) => (
+              {filteredMarks.map((mark, index) => (
                 <tr key={mark.id}>
                   <td>{index + 1}</td>
                   <td>{mark.student_id}</td>

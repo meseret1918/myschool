@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Components
 import Header from './components/Header';
+import Footer from "./components/Footer"
 import Homepage from './components/Auth/Homepage';
 
 // Auth Components
@@ -34,10 +35,10 @@ import ManageFee from './components/Admin/ManageFee';
 import ManageTimetable from './components/Admin/ManageTimetable';
 import AddTimetable from './components/Admin/AddTimetable';
 import EditTimetable from './components/Admin/EditTimetable';
+import SendMessageAdmin from './components/Admin/SendMessage';
 
 import AddFee from './components/Admin/AddFee';
 import EditFee from './components/Admin/EditFee';
-
 
 // Teacher Management Components
 import ManageMarks from './components/Teacher/ManageMarks';
@@ -52,6 +53,8 @@ import AddMark from './components/Teacher/AddMark';
 import EditMark from './components/Teacher/EditMark';
 import AddClass from './components/Teacher/AddClass';
 import EditClass from './components/Teacher/EditClass';
+import ViewTimetableTeacher from './components/Teacher/ViewTimetable';
+
 
 // Parent Management Components
 import SendMessageParent from './components/Parent/SendMessage';
@@ -60,6 +63,8 @@ import ViewMarksParent from './components/Parent/ViewMarks';
 import ViewSubjectsParent from './components/Parent/ViewSubjects';
 import ViewTeachersParent from './components/Parent/ViewTeachers';
 import ViewAttendanceParent from './components/Parent/ViewAttendance';
+import ViewTimetableParent from './components/Parent/ViewTimetable';
+import ViewFees from './components/Parent/ViewFees';
 
 // Student Management Components
 import SendMessageStudent from './components/Student/SendMessage';
@@ -68,9 +73,8 @@ import ViewMarksStudent from './components/Student/ViewMarks';
 import ViewSubjectsStudent from './components/Student/ViewSubjects';
 import ViewTeachersStudent from './components/Student/ViewTeachers';
 import ViewAttendanceStudent from './components/Student/ViewAttendance';
+import ViewTimetableStudent from './components/Student/ViewTimetable';
 
-// Admin-specific Components
-import SendMessageAdmin from './components/Admin/SendMessage';
 
 // ProtectedRoute Component
 import ProtectedRoute from './components/ProtectedRoute';
@@ -91,7 +95,7 @@ const App = () => {
   return (
     <Router>
       <Header isAuthenticated={isAuthenticated} role={role} />
-      <main className="container" style={{ paddingTop: '80px', minHeight: 'calc(100vh - 120px)' }}>
+      <main className="container" style={{ paddingTop: '80px', minHeight: 'calc(100vh - 160px)', paddingBottom: '60px' }}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Homepage />} />
@@ -138,6 +142,7 @@ const App = () => {
           <Route path="/teacher/edit-mark/:id" element={renderProtectedRoute("teacher", EditMark)} />
           <Route path="/teacher/add-class" element={renderProtectedRoute("teacher", AddClass)} />
           <Route path="/teacher/edit-class/:id" element={renderProtectedRoute("teacher", EditClass)} />
+          <Route path="/teacher/view-timetable" element={renderProtectedRoute("teacher", ViewTimetableTeacher)} />
 
           {/* Protected Routes for Parent */}
           <Route path="/parent/dashboard" element={renderProtectedRoute("parent", ParentDashboard)} />
@@ -147,6 +152,8 @@ const App = () => {
           <Route path="/parent/view-marks" element={renderProtectedRoute("parent", ViewMarksParent)} />
           <Route path="/parent/view-subjects" element={renderProtectedRoute("parent", ViewSubjectsParent)} />
           <Route path="/parent/view-teachers" element={renderProtectedRoute("parent", ViewTeachersParent)} />
+          <Route path="/parent/view-timetable" element={renderProtectedRoute("parent", ViewTimetableParent)} />
+          <Route path="/parent/view-fees" element={renderProtectedRoute("parent", ViewFees)} />
 
           {/* Protected Routes for Student */}
           <Route path="/student/dashboard" element={renderProtectedRoute("student", StudentDashboard)} />
@@ -156,11 +163,13 @@ const App = () => {
           <Route path="/student/view-marks" element={renderProtectedRoute("student", ViewMarksStudent)} />
           <Route path="/student/view-subjects" element={renderProtectedRoute("student", ViewSubjectsStudent)} />
           <Route path="/student/view-teachers" element={renderProtectedRoute("student", ViewTeachersStudent)} />
+          <Route path="/student/view-timetable" element={renderProtectedRoute("student", ViewTimetableStudent)} />
 
           {/* Fallback Route for 404 */}
           <Route path="*" element={<div style={{ textAlign: 'center', marginTop: '50px' }}><h1>404</h1><p>Page Not Found</p></div>} />
         </Routes>
       </main>
+      <Footer />
     </Router>
   );
 };

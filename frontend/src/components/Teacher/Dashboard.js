@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
-
 
 // Function to fetch dashboard data (simulating fetching of student count)
 const fetchDashboardData = async (setCounts) => {
@@ -104,7 +103,7 @@ const Dashboard = () => {
                             <ul>
                                 <li>
                                     <Link to="/teacher/ViewStudents" style={{ textDecoration: 'none', color: '#007bff' }}>
-                                    ViewStudents
+                                        View Students
                                     </Link>
                                 </li>
                                 <li>
@@ -130,6 +129,12 @@ const Dashboard = () => {
                                 <li>
                                     <Link to="/teacher/send-message" style={{ textDecoration: 'none', color: '#007bff' }}>
                                         Send Message
+                                    </Link>
+                                </li>
+                                {/* Added View Timetable Link */}
+                                <li>
+                                    <Link to="/teacher/view-timetable" style={{ textDecoration: 'none', color: '#007bff' }}>
+                                        View Timetable
                                     </Link>
                                 </li>
                             </ul>

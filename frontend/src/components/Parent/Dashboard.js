@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Button } from '@mui/material';
 
@@ -108,7 +108,6 @@ const ParentDashboard = () => {
         <Grid item xs={12} sm={4} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <StatsCard title="Total Teachers" value={counts.totalTeachers} />
           <StatsCard title="Total Subjects" value={counts.totalSubjects} />
-          <StatsCard title="Total Events" value={counts.totalEvents} />
         </Grid>
 
         {/* Right Side - Manage Resources */}
@@ -161,6 +160,12 @@ const ParentDashboard = () => {
                   </li>
                   <li>
                     <Link to="/parent/send-message">Send Message</Link>
+                  </li>
+                  <li>
+                    <Link to="/parent/view-timetable">View Timetable</Link>
+                  </li>
+                  <li>
+                    <Link to="/parent/view-fees">View Fees</Link>
                   </li>
                 </ul>
               </div>

@@ -108,7 +108,6 @@ const StudentDashboard = () => {
         <Grid item xs={12} sm={4} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <StatsCard title="Total Teachers" value={counts.totalTeachers} />
           <StatsCard title="Total Subjects" value={counts.totalSubjects} />
-          <StatsCard title="Total Events" value={counts.totalEvents} />
         </Grid>
 
         {/* Right Side - Manage Resources */}
@@ -161,6 +160,9 @@ const StudentDashboard = () => {
                   </li>
                   <li>
                     <Link to="/student/send-message">Send Message</Link>
+                  </li>
+                  <li>
+                    <Link to="/student/view-timetable">View Timetable</Link> {/* Added link */}
                   </li>
                 </ul>
               </div>

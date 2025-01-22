@@ -24,20 +24,18 @@ const Header = ({ isAuthenticated, role }) => {
       case `/${role}/Student`:
         return "Welcome to StudentDashboard";
       default:
-        return "School App"; // Default fallback for unknown routes
+        return "School App";
     }
   };
 
   return (
     <header>
       <div style={styles.headerContainer}>
-        {/* Logo Section */}
         <img src="/logo512.png" alt="Logo" style={styles.logo} />
         <h3 style={styles.title}>{getHeaderValue()}</h3>
-        {/* Homepage Icon */}
         <FaHome
           style={styles.homepageIcon}
-          onClick={() => (window.location.href = "/")} // Redirect to the homepage
+          onClick={() => (window.location.href = "/")}
           title="Go to Homepage"
         />
       </div>
@@ -45,29 +43,27 @@ const Header = ({ isAuthenticated, role }) => {
   );
 };
 
-// Define styles in an object to improve readability
 const styles = {
   headerContainer: {
-    backgroundColor: "#c0", // LightPurple color
-    padding: "4px 8px", // Adjusted padding for visual clarity
+    backgroundColor: "#9C33FF",
+    padding: "4px 8px",
     display: "flex",
     alignItems: "center",
-    color: "#fff", // White color for text
+    color: "#fff",
   },
   logo: {
     height: "30px",
     marginRight: "7px",
   },
   title: {
-    flexGrow: 1, // Push the homepage icon to the far right
+    flexGrow: 1,
     margin: 0,
   },
   homepageIcon: {
-    fontSize: "24px", // Adjust icon size
-    color: "#fff", // White color for the icon
+    fontSize: "24px",
+    color: "#fff",
     cursor: "pointer",
     fontWeight: "bold",
-    
   },
 };
 

@@ -72,11 +72,22 @@ const GoBackLink = styled.a`
   }
 `;
 
+const SearchInput = styled.input`
+  padding: 8px;
+  margin: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 300px;
+`;
+
 const ViewStudents = () => {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [flashMessage, setFlashMessage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,6 +99,7 @@ const ViewStudents = () => {
         }
         const data = await response.json();
         setStudents(data);
+        setFilteredStudents(data);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -98,8 +110,21 @@ const ViewStudents = () => {
     fetchStudents();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = students.filter((student) =>
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.class_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredStudents(filtered);
+    } else {
+      setFilteredStudents(students);
+    }
+  }, [searchTerm, students]);
+
   const goBack = () => {
-    navigate('/admin/Dashboard'); // Redirects to the /admin page
+    navigate('/teacher/Dashboard'); // Redirects to the /admin page
   };
 
   return (
@@ -120,11 +145,21 @@ const ViewStudents = () => {
         </FlashMessageContainer>
       )}
 
+      {/* Search bar positioned at right corner */}
+      <Box textAlign="right" mr={2}>
+        <SearchInput
+          type="text"
+          placeholder="Search by Name, Email, or Class"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </Box>
+
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : students.length === 0 ? (
+      ) : filteredStudents.length === 0 ? (
         <p>No students found</p>
       ) : (
         <TableContainer>
@@ -143,7 +178,7 @@ const ViewStudents = () => {
               </tr>
             </thead>
             <tbody>
-              {students.map((student, index) => (
+              {filteredStudents.map((student, index) => (
                 <tr key={student.id}>
                   <td>{index + 1}</td>
                   <td>{student.name}</td>
