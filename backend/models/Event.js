@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../database'); // Adjust according to your setup
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
 const Event = sequelize.define('Event', {
   id: {
