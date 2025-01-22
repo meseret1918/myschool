@@ -40,7 +40,7 @@ const subjectsRoutes = require('./routes/subjectsRoutes');
 
 const timetableRoutes = require('./routes/timetableRoutes');
 const feeRoutes = require('./routes/feeRoutes');
-
+const studentExamRoutes = require('./routes/studentExamRoutes');
 
 
 // Define API routes
@@ -57,7 +57,7 @@ app.use('/api/classes', classRoutes);
 app.use('/api/subjects', subjectsRoutes);
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/fee', feeRoutes);
-
+app.use('/api/exam', studentExamRoutes);
 
 // Serve static files (for production builds)
 if (process.env.NODE_ENV === 'production') {
