@@ -37,7 +37,6 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const marksRoutes = require('./routes/marksRoutes');
 const classRoutes = require('./routes/classRoutes');
 const subjectsRoutes = require('./routes/subjectsRoutes');
-
 const timetableRoutes = require('./routes/timetableRoutes');
 const feeRoutes = require('./routes/feeRoutes');
 const studentExamRoutes = require('./routes/studentExamRoutes');
