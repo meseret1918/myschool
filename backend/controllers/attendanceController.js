@@ -1,9 +1,9 @@
-const Attendance = require('../models/Attendance');  // Correct model name
+const Attendance = require('../models/Attendance');
 
 // Fetch all attendance records
 exports.getAllAttendance = async (req, res) => {
   try {
-    const results = await Attendance.findAll();  // Using Attendance model
+    const results = await Attendance.findAll();
     if (results.length === 0) {
       return res.status(404).json({ message: 'No attendance records found.' });
     }
