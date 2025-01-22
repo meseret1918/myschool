@@ -70,7 +70,6 @@ exports.updateFee = async (req, res) => {
         if (!fee) {
             return res.status(404).json({ error: 'Fee not found' });
         }
-
         // Update fee attributes only if new data is provided
         fee.paid = paid !== undefined ? paid : fee.paid;
         fee._status = _status !== undefined ? _status : fee._status;
