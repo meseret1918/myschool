@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Database connection
-const { Op } = require('sequelize'); // Optional for advanced querying
-const Teacher = require('../models/Teacher'); // Sequelize model for the teachers table
+const db = require('../config/db'); 
+const { Op } = require('sequelize'); 
+const Teacher = require('../models/Teacher'); 
 
 // Middleware to check body parsing
 router.use(express.json());
