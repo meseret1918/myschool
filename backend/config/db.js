@@ -11,6 +11,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
         await sequelize.authenticate();
         console.log('Connection to MySQL has been established successfully.');
 
+        // Optionally sync models (use carefully in production)
+        // await sequelize.sync(); 
 
     } catch (error) {
         console.error('Unable to connect to the database:', error);
