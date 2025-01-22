@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      username: email.split('@')[0], // Extract username from email
+      username: email.split('@')[0], 
     });
 
     return res.status(201).json({ message: 'Registration successful', user: newUser });
