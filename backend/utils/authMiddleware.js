@@ -60,4 +60,5 @@ const verifyAdmin = (req, res, next) => {
     }
 };
 
+
 module.exports = { verifyAuthenticated, verifyAdmin };
