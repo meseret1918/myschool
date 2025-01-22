@@ -11,7 +11,7 @@ const StudentMark = sequelize.define('StudentMark', {
     type: DataTypes.INTEGER,
     allowNull: true,
     references: {
-      model: 'students',  // Assuming you have a students table
+      model: 'students',  
       key: 'id',
     },
   },
@@ -33,7 +33,7 @@ const StudentMark = sequelize.define('StudentMark', {
   },
 }, {
   tableName: 'marks',
-  timestamps: false,  // Assuming there are no timestamps in your table
+  timestamps: false, 
 });
 
 module.exports = StudentMark;
