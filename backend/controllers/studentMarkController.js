@@ -10,7 +10,6 @@ exports.getAllMarks = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch mark records.' });
   }
 };
-
 // Fetch mark record by ID
 exports.getMarkById = async (req, res) => {
   try {
