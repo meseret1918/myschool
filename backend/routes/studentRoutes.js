@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
             address
         });
 
-        res.status(201).json(newStudent); // Return the created student object
+        res.status(201).json(newStudent); 
     } catch (error) {
         console.error('Error adding student:', error);
         res.status(500).json({ message: 'Error adding student. Please try again later.' });
