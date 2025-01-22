@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material'; // Added TextField import
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+// Styled components
 const TableContainer = styled.div`
   margin: 20px auto;
   padding: 10px;
@@ -52,6 +53,17 @@ const StyledTable = styled.table`
   }
 `;
 
+const GoBackLink = styled.a`
+  font-size: 24px;
+  color: #6c757d;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #5a6268;
+  }
+`;
+
 const FlashMessageContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -75,12 +87,8 @@ const IconButton = styled.button`
   cursor: pointer;
   color: ${(props) => props.color || '#007bff'};
   font-size: 20px;
-  span {
-    transition: color 0.3s;
-  }
-  text-align: left;
 
-  &:hover span {
+  &:hover {
     color: ${(props) => props.hoverColor || '#0056b3'};
   }
 
@@ -102,21 +110,11 @@ const DeleteDialog = styled.div`
   text-align: center;
 `;
 
-const GoBackLink = styled.a`
-  font-size: 24px;
-  color: #6c757d;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: #5a6268;
-  }
-`;
-
 const ManageStudents = () => {
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
   const [studentToDelete, setStudentToDelete] = useState(null);
@@ -141,7 +139,13 @@ const ManageStudents = () => {
     fetchStudents();
   }, []);
 
-  const handleDelete = (id) => setStudentToDelete(id);
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    const filtered = students.filter((student) =>
+      student.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setStudents(filtered);
+  };
 
   const confirmDelete = async () => {
     if (isDeleting || !studentToDelete) return;
@@ -168,16 +172,22 @@ const ManageStudents = () => {
     }
   };
 
-  const cancelDelete = () => setStudentToDelete(null);
-
-  const goBack = () => {
-    navigate('/admin/Dashboard'); // Redirects to the /admin page
-  };
-
   return (
     <div>
+      {/* Search Bar */}
+      <Box my={2} display="flex" justifyContent="flex-end">
+        <TextField
+          label="Search Students"
+          variant="outlined"
+          value={searchQuery}
+          onChange={handleSearch}
+          size="small"
+        />
+      </Box>
+
+      {/* Go Back Link */}
       <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
-        <GoBackLink href="#" onClick={goBack}>
+        <GoBackLink href="#" onClick={() => navigate('/admin/Dashboard')}>
           🔙
         </GoBackLink>
       </Box>
@@ -185,7 +195,6 @@ const ManageStudents = () => {
       <Box my={2} textAlign="center">
         <h2>Manage Students</h2>
       </Box>
-
       {flashMessage && (
         <FlashMessageContainer>
           <FlashMessage type={flashMessage.type}>{flashMessage.message}</FlashMessage>
@@ -251,7 +260,7 @@ const ManageStudents = () => {
                     <IconButton
                       color="#dc3545"
                       hoverColor="#c82333"
-                      onClick={() => handleDelete(student.id)}
+                      onClick={() => setStudentToDelete(student.id)}
                       disabled={isDeleting}
                     >
                       <DeleteIcon />
@@ -271,7 +280,7 @@ const ManageStudents = () => {
             <IconButton color="#dc3545" hoverColor="#c82333" onClick={confirmDelete}>
               Yes
             </IconButton>
-            <IconButton color="#6c757d" hoverColor="#5a6268" onClick={cancelDelete}>
+            <IconButton color="#6c757d" hoverColor="#5a6268" onClick={() => setStudentToDelete(null)}>
               No
             </IconButton>
           </div>

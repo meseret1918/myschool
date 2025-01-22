@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -113,6 +113,13 @@ const GoBackLink = styled.a`
   }
 `;
 
+const SearchContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
 const ManageParents = () => {
   const [parents, setParents] = useState([]);
   const [error, setError] = useState(null);
@@ -120,6 +127,7 @@ const ManageParents = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
   const [parentToDelete, setParentToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -173,6 +181,12 @@ const ManageParents = () => {
     navigate('/admin/Dashboard');
   };
 
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+
+  const filteredParents = parents.filter((parent) =>
+    parent.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
       <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
@@ -185,6 +199,17 @@ const ManageParents = () => {
         <h2>Manage Parents</h2>
       </Box>
 
+      <SearchContainer>
+        <TextField
+          label="Search"
+          variant="outlined"
+          size="small"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{ width: 250 }}
+        />
+      </SearchContainer>
+
       {flashMessage && (
         <FlashMessageContainer>
           <FlashMessage type={flashMessage.type}>{flashMessage.message}</FlashMessage>
@@ -195,7 +220,7 @@ const ManageParents = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : parents.length === 0 ? (
+      ) : filteredParents.length === 0 ? (
         <p>No parents found</p>
       ) : (
         <TableContainer>
@@ -213,7 +238,7 @@ const ManageParents = () => {
               </tr>
             </thead>
             <tbody>
-              {parents.map((parent, index) => (
+              {filteredParents.map((parent, index) => (
                 <tr key={parent.parent_id}>
                   <td>{index + 1}</td>
                   <td>{parent.name}</td>

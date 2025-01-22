@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material'; // Import TextField
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -108,6 +108,7 @@ const ManageTeachers = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
   const [teacherToDelete, setTeacherToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -162,12 +163,36 @@ const ManageTeachers = () => {
     navigate('/admin/Dashboard');
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredTeachers = teachers.filter((teacher) => {
+    return (
+      teacher.FirstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      teacher.LastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      teacher.Email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
   return (
     <div>
-      <Box my={2} display="flex" justifyContent="flex-start" alignItems="center">
+      <Box my={2} display="flex" justifyContent="space-between" alignItems="center">
         <GoBackLink href="#" onClick={goBack}>
           🔙
         </GoBackLink>
+
+        {/* Search Bar */}
+        <Box>
+          <TextField
+            label="Search"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            style={{ width: '250px' }}
+          />
+        </Box>
       </Box>
 
       <Box my={2} textAlign="center">
@@ -184,7 +209,7 @@ const ManageTeachers = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : teachers.length === 0 ? (
+      ) : filteredTeachers.length === 0 ? (
         <p>No teachers found</p>
       ) : (
         <TableContainer>
@@ -209,7 +234,7 @@ const ManageTeachers = () => {
               </tr>
             </thead>
             <tbody>
-              {teachers.map((teacher, index) => (
+              {filteredTeachers.map((teacher, index) => (
                 <tr key={teacher.TeacherID}>
                   <td>{index + 1}</td>
                   <td>{teacher.FirstName}</td>

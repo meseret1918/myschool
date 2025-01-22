@@ -130,6 +130,7 @@ const AdminDashboard = () => {
           {/* Add Total Classes and Total Subjects */}
           <StatsCard title="Total Classes" value={counts.totalClasses} />
           <StatsCard title="Total Subjects" value={counts.totalSubjects} />
+          
         </Grid>
 
         {/* Right Side - Manage Resources */}

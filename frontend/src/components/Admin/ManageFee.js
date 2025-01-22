@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -103,11 +103,13 @@ const GoBackLink = styled.a`
 
 const ManageFees = () => {
   const [fees, setFees] = useState([]);
+  const [filteredFees, setFilteredFees] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [flashMessage, setFlashMessage] = useState(null);
   const [feeToDelete, setFeeToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -119,6 +121,7 @@ const ManageFees = () => {
         }
         const data = await response.json();
         setFees(data);
+        setFilteredFees(data); // Initially display all fees
       } catch (error) {
         setError(error.message);
       } finally {
@@ -128,6 +131,20 @@ const ManageFees = () => {
 
     fetchFees();
   }, []);
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = fees.filter(
+      (fee) =>
+        fee.index_number.toString().toLowerCase().includes(query) ||
+        fee.year.toString().toLowerCase().includes(query) ||
+        fee.month.toLowerCase().includes(query) ||
+        fee._status.toLowerCase().includes(query) ||
+        fee.student_status.toLowerCase().includes(query)
+    );
+    setFilteredFees(filtered);
+  };
 
   const handleDelete = (id) => setFeeToDelete(id);
 
@@ -143,6 +160,7 @@ const ManageFees = () => {
       if (response.ok) {
         setFlashMessage({ type: 'success', message: 'Fee deleted successfully!' });
         setFees(fees.filter((fee) => fee.id !== feeToDelete));
+        setFilteredFees(filteredFees.filter((fee) => fee.id !== feeToDelete)); // Update filtered list
       } else {
         setFlashMessage({ type: 'error', message: 'Error deleting fee' });
       }
@@ -173,6 +191,17 @@ const ManageFees = () => {
         <h2>Manage Fees</h2>
       </Box>
 
+      {/* Search Bar (aligned to the right corner) */}
+      <Box my={2} display="flex" justifyContent="flex-end">
+        <TextField
+          label="Search Fees"
+          variant="outlined"
+          value={searchQuery}
+          onChange={handleSearch}
+          size="small"
+        />
+      </Box>
+
       {flashMessage && (
         <FlashMessageContainer>
           <FlashMessage type={flashMessage.type}>{flashMessage.message}</FlashMessage>
@@ -183,7 +212,7 @@ const ManageFees = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : fees.length === 0 ? (
+      ) : filteredFees.length === 0 ? (
         <p>No fees found</p>
       ) : (
         <TableContainer>
@@ -202,7 +231,7 @@ const ManageFees = () => {
               </tr>
             </thead>
             <tbody>
-              {fees.map((fee, index) => (
+              {filteredFees.map((fee, index) => (
                 <tr key={fee.id}>
                   <td>{index + 1}</td>
                   <td>{fee.index_number}</td>
