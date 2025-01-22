@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const feeController = require('../controllers/FeeController'); // Assuming the controller is in the 'controllers' folder
+const feeController = require('../controllers/FeeController'); 
 
 // GET all fees
 router.get('/', feeController.getAllFee);
