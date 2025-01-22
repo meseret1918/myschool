@@ -46,8 +46,8 @@ const attendance = sequelize.define('attendance', {
         allowNull: false
     }
 }, {
-    tableName: 'attendances', // Table name is plural, so make sure this matches the DB
-    timestamps: true // Use Sequelize's default behavior to manage `createdAt` and `updatedAt`
+    tableName: 'attendances',
+    timestamps: true 
 });
 
 module.exports = attendance;
