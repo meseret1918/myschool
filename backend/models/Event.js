@@ -13,15 +13,15 @@ const Event = sequelize.define('Event', {
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: true // Since description is nullable
+    allowNull: true 
   },
   date: {
     type: DataTypes.DATE,
-    allowNull: false // Since date is not nullable
+    allowNull: false 
   }
 }, {
-  tableName: 'events', // Specify the table name
-  timestamps: false // If your table doesn't include 'createdAt' and 'updatedAt' fields
+  tableName: 'events', 
+  timestamps: false 
 });
 
 module.exports = Event;
