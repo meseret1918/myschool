@@ -1,5 +1,5 @@
 const express = require('express');
-const Parent = require('../models/Parent'); // Ensure this path is correct
+const Parent = require('../models/Parent');
 const router = express.Router();
 
 // Helper function to get a parent by ID
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
         const parents = await Parent.findAll();
         res.status(200).json(parents);
     } catch (err) {
-        console.error('Error fetching parents:', err);  // More detailed error logging
+        console.error('Error fetching parents:', err); 
         res.status(500).json({ error: 'Failed to fetch parents' });
     }
 });
@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 
         res.status(200).json(parent);
     } catch (err) {
-        console.error('Error fetching parent:', err);  // More detailed error logging
+        console.error('Error fetching parent:', err); 
         res.status(500).json({ error: 'Failed to fetch parent' });
     }
 });
@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
         const parent = await Parent.create({ name, phone, email, address });
         res.status(201).json(parent);
     } catch (err) {
-        console.error('Error adding parent:', err);  // More detailed error logging
+        console.error('Error adding parent:', err);  
         res.status(500).json({ error: 'Failed to add parent' });
     }
 });
