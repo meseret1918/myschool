@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Adjust the path if necessary
+const User = require('../models/User'); 
 
 // Fallback JWT secret in case environment variable is not set
 const JWT_SECRET = process.env.JWT_SECRET || 'jwtsecretkey1234567890';
