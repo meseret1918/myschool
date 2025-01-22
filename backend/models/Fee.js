@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Adjust the path to your database configuration
+const sequelize = require('../config/db'); 
 
 const Fee = sequelize.define('Fee', {
   id: {
@@ -13,15 +13,15 @@ const Fee = sequelize.define('Fee', {
     allowNull: false
   },
   year: {
-    type: DataTypes.INTEGER,  // Sequelize represents YEAR as INTEGER
+    type: DataTypes.INTEGER,  
     allowNull: false
   },
   month: {
-    type: DataTypes.STRING, // This maps to VARCHAR in MySQL
+    type: DataTypes.STRING, 
     allowNull: false
   },
   date: {
-    type: DataTypes.DATEONLY, // Sequelize DATEONLY is used for date type in MySQL
+    type: DataTypes.DATEONLY, 
     allowNull: false
   },
   paid: {
@@ -29,16 +29,16 @@ const Fee = sequelize.define('Fee', {
     allowNull: false
   },
   _status: {
-    type: DataTypes.STRING, // This is mapped from VARCHAR(255)
+    type: DataTypes.STRING, 
     allowNull: false
   },
   student_status: {
-    type: DataTypes.STRING, // Also mapped from VARCHAR(255)
+    type: DataTypes.STRING, 
     allowNull: false
   }
 }, {
   tableName: 'Fees',
-  timestamps: false // Disable automatic createdAt/updatedAt fields if not needed
+  timestamps: false 
 });
 
 module.exports = Fee;
