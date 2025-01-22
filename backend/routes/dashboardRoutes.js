@@ -7,13 +7,16 @@ const Class = require('../models/classes');
 const Subject = require('../models/Subject');  
 const cors = require('cors');
 
-// Use CORS middleware (for development purposes, allow all origins)
-router.use(cors());
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
-// Dashboard route to get statistics
+router.use(cors(corsOptions));
+
 router.get('/', async (req, res) => {
   try {
-    // Query to count how many parents have more than one student
     const parentsWithMultipleStudents = await Student.sequelize.query(`
       SELECT parent_id, COUNT(*) AS student_count
       FROM students
@@ -21,29 +24,23 @@ router.get('/', async (req, res) => {
       HAVING COUNT(*) > 1
     `);
 
-    // Query for total teachers, students, and parents
     const totalTeachers = await Teacher.count();
     const totalStudents = await Student.count();
     const totalParents = await Parent.count();
-
-    // Query for total classes
     const totalClasses = await Class.count();
-
-    // Query for total subjects
     const totalSubjects = await Subject.count();
 
-    // Return the stats including the parents with more than one student, total classes, and total subjects
     res.json({
       totalTeachers,
       totalStudents,
       totalParents,
-      parentsWithMultipleStudents: parentsWithMultipleStudents[0].length, // Get the count of parents with more than one student
-      totalClasses, // Total Classes
-      totalSubjects, // Total Subjects
+      parentsWithMultipleStudents: parentsWithMultipleStudents[0].length,
+      totalClasses,
+      totalSubjects,
     });
   } catch (err) {
-    console.error('Error occurred while fetching data:', err);  // Enhanced logging for easier troubleshooting
-    res.status(500).json({ message: 'Unable to fetch dashboard stats', error: err.message }); // Return the error message to the frontend
+    console.error('Error occurred while fetching data:', err);
+    res.status(500).json({ message: 'Unable to fetch dashboard stats', error: err.message });
   }
 });
 
