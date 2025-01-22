@@ -1,3 +1,4 @@
+// Sequelize Model (Message.js)
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
@@ -7,27 +8,27 @@ const Message = sequelize.define('Message', {
     autoIncrement: true,
     primaryKey: true,
   },
-  senderId: {
+  sender_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     field: 'sender_id',
   },
-  recipientId: {
+  recipient_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
     field: 'recipient_id',
   },
-  recipientRole: {
+  recipient_role: {
     type: DataTypes.ENUM('student', 'teacher', 'parent', 'admin'),
     allowNull: false,
     field: 'recipient_role',
   },
-  content: {
+  message: {
     type: DataTypes.TEXT,
     allowNull: false,
     field: 'message',
   },
-  sentAt: {
+  sent_at: {
     type: DataTypes.DATE,
     allowNull: true,
     field: 'sent_at',
@@ -39,8 +40,8 @@ const Message = sequelize.define('Message', {
 });
 
 Message.associate = (models) => {
-  Message.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
-  Message.belongsTo(models.User, { foreignKey: 'recipientId', as: 'recipient' });
+  Message.belongsTo(models.User, { foreignKey: 'sender_id', as: 'sender' });
+  Message.belongsTo(models.User, { foreignKey: 'recipient_id', as: 'recipient' });
 };
 
 module.exports = Message;

@@ -36,8 +36,8 @@ const attendance = sequelize.define('attendance', {
         allowNull: false
     },
     createdAt: {
-        type: DataTypes.DATE, // Ensure it's properly defined as DATE or TIMESTAMP
-        defaultValue: DataTypes.NOW, // Automatically sets the current timestamp
+        type: DataTypes.DATE, 
+        defaultValue: DataTypes.NOW, 
         allowNull: false
     },
     updatedAt: {
