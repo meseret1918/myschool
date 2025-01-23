@@ -37,6 +37,6 @@ Now, navigate to `localhost:3000` in your browser.
 
 The Backend API will be running at `localhost:5000`.
 
-[Youtube Video]()
+[Youtube Video](https://youtu.be/5tSLci0lEiM)
 
 [LinkedIn](https://www.linkedin.com/in/meseret-alem/)
